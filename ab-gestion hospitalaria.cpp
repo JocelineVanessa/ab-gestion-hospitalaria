@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 using namespace std;
 
@@ -89,6 +90,7 @@ public:
         if (file.is_open()) {
             string linea;
             while (getline(file, linea)) {
+                if (linea.empty()) continue;
                 stringstream ss(linea);
                 string nombreUsuario, contraseña, rol;
                 getline(ss, nombreUsuario, ',');
@@ -120,6 +122,113 @@ public:
         return true;
     }
 
+    static void CrearMedico() {
+        ofstream file("medicos.csv", ios::app);
+        if (!file.is_open()) {
+            cerr << "Error al abrir el archivo para guardar el medico.\n";
+            return;
+        }
+
+        string nombre, apellido, dni, correo, telefono, especialidad;
+        int diaNacimiento, mesNacimiento, añoNacimiento;
+
+        cout << "Ingrese el nombre del medico: ";
+        cin >> nombre;
+        cout << "Ingrese el apellido del medico: ";
+        cin >> apellido;
+        cout << "Ingrese el DNI del medico: ";
+        cin >> dni;
+        cout << "Ingrese el correo del medico: ";
+        cin >> correo;
+        cout << "Ingrese el telefono del medico: ";
+        cin >> telefono;
+        cout << "Ingrese el dia de nacimiento del medico: ";
+        cin >> diaNacimiento;
+        cout << "Ingrese el mes de nacimiento del medico: ";
+        cin >> mesNacimiento;
+        cout << "Ingrese el anio de nacimiento del medico: ";
+        cin >> añoNacimiento;
+        cout << "Ingrese la especialidad del medico: ";
+        cin >> especialidad;
+
+        time_t t = time(0);
+        tm* now = localtime(&t);
+        int añoActual = now->tm_year + 1900;
+        int mesActual = now->tm_mon + 1;
+        int diaActual = now->tm_mday;
+
+        int edad = añoActual - añoNacimiento;
+        if (mesActual < mesNacimiento || (mesActual == mesNacimiento && diaActual < diaNacimiento)) {
+            edad--;
+        }
+
+        file << nombre << "," << apellido << "," << dni << "," << correo << "," << telefono << "," << añoNacimiento << "," << edad << "," << especialidad << "\n";
+        file.close();
+
+        cout << "Medico creado exitosamente:\n";
+        cout << "Nombre: " << nombre << " " << apellido << "\n";
+        cout << "DNI: " << dni << "\n";
+        cout << "Correo: " << correo << "\n";
+        cout << "Telefono: " << telefono << "\n";
+        cout << "Fecha de nacimiento: " << diaNacimiento << "/" << mesNacimiento << "/" << añoNacimiento << "\n";
+        cout << "Edad: " << edad << "\n";
+        cout << "Especialidad: " << especialidad << "\n";
+    }
+
+    static void EliminarMedico() {
+        string dni;
+        cout << "Ingrese el DNI del medico a eliminar: ";
+        cin >> dni;
+
+        fstream file("medicos.csv", ios::in | ios::out);
+        if (!file.is_open()) {
+            cerr << "Error al abrir el archivo.\n";
+            return;
+        }
+
+        string linea;
+        streampos lastPos = file.tellg();
+        bool encontrado = false;
+
+        while (getline(file, linea)) {
+            if (linea.find(dni) != string::npos) {
+                encontrado = true;
+                break;
+            }
+            lastPos = file.tellg();
+        }
+
+        if (encontrado) {
+            file.seekp(lastPos);
+            file << string(linea.length(), ' ');
+            cout << "Medico eliminado exitosamente.\n";
+        }
+        else {
+            cout << "Medico no encontrado.\n";
+        }
+
+        file.close();
+    }
+
+    static void MostrarMedicos() {
+        ifstream file("medicos.csv");
+        if (file.is_open()) {
+            string linea;
+            cout << "Lista de medicos:\n";
+            cout << "--------------------------------------------------\n";
+            while (getline(file, linea)) {
+                if (!linea.empty()) {
+                    cout << linea << "\n";
+                }
+            }
+            cout << "--------------------------------------------------\n";
+            file.close();
+        }
+        else {
+            cerr << "Archivo de medicos no encontrado.\n";
+        }
+    }
+
     static void MostrarUsuarios(const vector<Usuario>& usuarios) {
         cout << "Lista de usuarios y permisos:\n";
         cout << "--------------------------------------------------\n";
@@ -131,7 +240,7 @@ public:
             const vector<bool>& permisos = usuario.getPermisos();
             cout << "[ ";
             for (size_t i = 0; i < permisos.size(); ++i) {
-                cout << (permisos[i] ? "Sí" : "No") << (i < permisos.size() - 1 ? ", " : " ");
+                cout << (permisos[i] ? "Si" : "No") << (i < permisos.size() - 1 ? ", " : " ");
             }
             cout << "]\n";
         }
@@ -150,6 +259,8 @@ bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const
 }
 
 int main() {
+
+    cout << "Bienvenido\n";
     vector<Usuario> usuarios;
     const string archivoUsuarios = "usuarios.csv";
 
@@ -159,7 +270,7 @@ int main() {
         cout << "No se encontraron usuarios. Creando usuario administrador...\n";
         usuarios.push_back(Usuario("JocelineRamirez", "1234", "ADMINISTRADOR"));
         Usuario::GuardarUsuarios(usuarios, archivoUsuarios);
-        cout << "Usuario administrador creado.\n";
+        cout << "Usuario administrador creado con exito\n";
     }
 
     string nombreUsuario, contraseña;
@@ -180,7 +291,10 @@ int main() {
                 cout << "Opciones:\n";
                 cout << "1. Crear nuevo usuario\n";
                 cout << "2. Mostrar lista de usuarios\n";
-                cout << "3. Guardar y salir\n";
+                cout << "3. Crear medico\n";
+                cout << "4. Mostrar lista de medicos\n";
+                cout << "5. Guardar y salir\n";
+                cout << "6. Eliminar medico\n";
                 cout << "Ingrese su opcion: ";
                 cin >> opcion;
 
@@ -193,20 +307,32 @@ int main() {
                     Usuario::MostrarUsuarios(usuarios);
                 }
                 else if (opcion == '3') {
+                    Usuario::CrearMedico();
+                }
+                else if (opcion == '4') {
+                    Usuario::MostrarMedicos();
+                }
+                else if (opcion == '5') {
                     Usuario::GuardarUsuarios(usuarios, archivoUsuarios);
                     cout << "Usuarios guardados con exito\n";
                     salir = true;
                 }
+                else if (opcion == '6') {
+                    Usuario::EliminarMedico();
+                }
                 else {
                     cout << "Opcion no valida.\n";
                 }
+
             }
         }
         else {
-            cout << "Usted no tiene permisos para realizar esta accion.\n";
+            cout << "No tiene permisos para realizar esta accion.\n";
         }
+    }
+    else {
+        cout << "Usuario o contraseña incorrectos.\n";
     }
 
     return 0;
-
 }
