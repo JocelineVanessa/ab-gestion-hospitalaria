@@ -23,52 +23,44 @@ enum PermisoIndex {
     TOTAL_PERMISOS
 };
 
-class Paciente { 
-private: 
-    string Nombre; 
-    string DNI; 
-    string FechaNacimiento; 
-    string Telefono; 
-    string Correo;  
-    string FechaIngreso; 
-    string HistorialClinico; 
-
-public: 
+class Paciente {
+private:
+    string Nombre;
+    string DNI;
+    string FechaNacimiento;
+    string Telefono;
+    string Correo;
+    string FechaIngreso;
+    string HistorialClinico;
+public:
     Paciente() : Nombre(""), DNI(""), FechaNacimiento(""), Telefono(""), Correo(""), FechaIngreso(""), HistorialClinico("") {
     }
-
-    Paciente(string nombre, string dni, string fechaNacimiento, string telefono, string correo, string fechaIngreso, string historialClinico) : Nombre(nombre), DNI(dni), FechaNacimiento(fechaNacimiento), Telefono(telefono), Correo(correo), FechaIngreso(fechaIngreso), HistorialClinico(historialClinico) {
-    } 
-    string getNombre() 
-        const { return Nombre; } 
-    string getDNI() 
-        const { return DNI; } 
-    string getFechaNacimiento() 
-        const { return FechaNacimiento; } 
-    string getTelefono() 
-        const { return Telefono; } 
-    string getCorreo() 
-        const { return Correo; } 
-    string getFechaIngreso() 
-        const { return FechaIngreso; } 
-    string getHistorialClinico() 
-        const { return HistorialClinico; } 
-    void setNombre(const string& nombre) { Nombre = nombre; } 
-    void setDNI(const string& dni) { DNI = dni; } 
-    void setFechaNacimiento(const string& fechaNacimiento) { FechaNacimiento = fechaNacimiento; } 
-    void setTelefono(const string& telefono) { Telefono = telefono; } 
-    void setCorreo(const string& correo) { Correo = correo; } 
-    void setFechaIngreso(const string& fechaIngreso) { FechaIngreso = fechaIngreso; } 
-    void setHistorialClinico(const string& historialClinico) { HistorialClinico = historialClinico; } 
-    void MostrarPaciente() 
-        const {
-    cout << "Nombre: " << Nombre << endl;
-    cout << "DNI: " << DNI << endl;
-    cout << "Fecha de Nacimiento: " << FechaNacimiento << endl; 
-    cout << "Telefono: " << Telefono << endl;
-    cout << "Correo: " << Correo << endl;
-    cout << "Fecha de Ingreso: " << FechaIngreso << endl;
-    cout << "Historial Clinico: " << HistorialClinico << endl; }
+    Paciente(string nombre, string dni, string fechaNacimiento, string telefono, string correo, string fechaIngreso, string historialClinico)
+        : Nombre(nombre), DNI(dni), FechaNacimiento(fechaNacimiento), Telefono(telefono), Correo(correo), FechaIngreso(fechaIngreso), HistorialClinico(historialClinico) {
+    }
+    string getNombre() const { return Nombre; }
+    string getDNI() const { return DNI; }
+    string getFechaNacimiento() const { return FechaNacimiento; }
+    string getTelefono() const { return Telefono; }
+    string getCorreo() const { return Correo; }
+    string getFechaIngreso() const { return FechaIngreso; }
+    string getHistorialClinico() const { return HistorialClinico; }
+    void setNombre(const string& nombre) { Nombre = nombre; }
+    void setDNI(const string& dni) { DNI = dni; }
+    void setFechaNacimiento(const string& fechaNacimiento) { FechaNacimiento = fechaNacimiento; }
+    void setTelefono(const string& telefono) { Telefono = telefono; }
+    void setCorreo(const string& correo) { Correo = correo; }
+    void setFechaIngreso(const string& fechaIngreso) { FechaIngreso = fechaIngreso; }
+    void setHistorialClinico(const string& historialClinico) { HistorialClinico = historialClinico; }
+    void MostrarPaciente() const {
+        cout << "Nombre: " << Nombre << endl;
+        cout << "DNI: " << DNI << endl;
+        cout << "Fecha de Nacimiento: " << FechaNacimiento << endl;
+        cout << "Telefono: " << Telefono << endl;
+        cout << "Correo: " << Correo << endl;
+        cout << "Fecha de Ingreso: " << FechaIngreso << endl;
+        cout << "Historial Clinico: " << HistorialClinico << endl;
+    }
 };
 
 class Usuario {
@@ -294,6 +286,106 @@ public:
         }
         cout << "--------------------------------------------------\n";
     }
+
+    // Métodos para manejo de pacientes:
+    static void CrearPaciente() {
+        ofstream file("pacientes.csv", ios::app);
+        if (!file.is_open()) {
+            cerr << "Error al abrir el archivo para guardar el paciente.\n";
+            return;
+        }
+
+        cin.ignore();
+        string nombre, dni, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico;
+        cout << "Ingrese el nombre del paciente: ";
+        getline(cin, nombre);
+        cout << "Ingrese el DNI del paciente: ";
+        getline(cin, dni);
+        cout << "Ingrese la fecha de nacimiento del paciente (YYYY-MM-DD): ";
+        getline(cin, fechaNacimiento);
+        cout << "Ingrese el telefono del paciente: ";
+        getline(cin, telefono);
+        cout << "Ingrese el correo del paciente: ";
+        getline(cin, correo);
+        cout << "Ingrese la fecha de ingreso del paciente (YYYY-MM-DD): ";
+        getline(cin, fechaIngreso);
+        cout << "Ingrese el historial clinico del paciente: ";
+        getline(cin, historialClinico);
+
+        file << nombre << "," << dni << "," << fechaNacimiento << "," << telefono << "," << correo << "," << fechaIngreso << "," << historialClinico << "\n";
+        file.close();
+
+        cout << "Paciente creado exitosamente.\n";
+    }
+
+    static void MostrarPacientes() {
+        ifstream file("pacientes.csv");
+        if (file.is_open()) {
+            string linea;
+            cout << "Lista de pacientes:\n";
+            cout << "--------------------------------------------------\n";
+            while (getline(file, linea)) {
+                if (!linea.empty()) {
+                    cout << linea << "\n";
+                }
+            }
+            cout << "--------------------------------------------------\n";
+            file.close();
+        }
+        else {
+            cerr << "Archivo de pacientes no encontrado.\n";
+        }
+    }
+
+    static void EliminarPaciente() {
+        string dni;
+        cout << "Ingrese el DNI del paciente a eliminar: ";
+        cin >> dni;
+
+        ifstream file("pacientes.csv");
+        if (!file.is_open()) {
+            cerr << "Error al abrir el archivo de pacientes.\n";
+            return;
+        }
+
+        vector<string> lineas;
+        string linea;
+        bool encontrado = false;
+
+        while (getline(file, linea)) {
+            stringstream ss(linea);
+            vector<string> campos;
+            string campo;
+            while (getline(ss, campo, ',')) {
+                campos.push_back(campo);
+            }
+            if (campos.size() > 1 && campos[1] == dni) {
+                encontrado = true;
+                continue; // omitimos esta línea (eliminamos el paciente)
+            }
+            lineas.push_back(linea);
+        }
+
+        file.close();
+
+        if (!encontrado) {
+            cout << "Paciente no encontrado.\n";
+            return;
+        }
+
+        ofstream fileOut("pacientes.csv", ios::trunc);
+        if (!fileOut.is_open()) {
+            cerr << "Error al abrir el archivo de pacientes para escribir.\n";
+            return;
+        }
+
+        for (auto& l : lineas) {
+            fileOut << l << "\n";
+        }
+        fileOut.close();
+
+        cout << "Paciente eliminado exitosamente.\n";
+    }
 };
 
 bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const vector<Usuario>& usuarios, Usuario& usuarioAutenticado) {
@@ -307,8 +399,6 @@ bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const
 }
 
 int main() {
-
-    cout << "Prueba Paciente:\n"; Paciente paciente1("Juan Perez", "12345678A", "1985-03-15", "647841234", "juanperez@gmail.com", "2024-12-14", "Sin antecedentes"); cout << "Informacion del paciente:\n"; paciente1.MostrarPaciente();
 
     cout << "Bienvenido\n";
     vector<Usuario> usuarios;
@@ -345,6 +435,9 @@ int main() {
                 cout << "4. Mostrar lista de medicos\n";
                 cout << "5. Guardar y salir\n";
                 cout << "6. Eliminar medico\n";
+                cout << "7. Crear paciente\n";
+                cout << "8. Mostrar pacientes\n";
+                cout << "9. Eliminar paciente\n";
                 cout << "Ingrese su opcion: ";
                 cin >> opcion;
 
@@ -369,6 +462,25 @@ int main() {
                 }
                 else if (opcion == '6') {
                     Usuario::EliminarMedico();
+                }
+                else if (opcion == '7') {
+                    if (usuarioAutenticado.VerificarPermiso(CREAR_PACIENTE)) {
+                        Usuario::CrearPaciente();
+                    }
+                    else {
+                        cout << "No tiene permiso para crear pacientes.\n";
+                    }
+                }
+                else if (opcion == '8') {
+                    Usuario::MostrarPacientes();
+                }
+                else if (opcion == '9') {
+                    if (usuarioAutenticado.VerificarPermiso(ELIMINAR_PACIENTE)) {
+                        Usuario::EliminarPaciente();
+                    }
+                    else {
+                        cout << "No tiene permiso para eliminar pacientes.\n";
+                    }
                 }
                 else {
                     cout << "Opcion no valida.\n";
