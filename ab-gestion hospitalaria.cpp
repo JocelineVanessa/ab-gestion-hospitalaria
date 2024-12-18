@@ -38,6 +38,7 @@ public:
     Paciente(string nombre, string dni, string fechaNacimiento, string telefono, string correo, string fechaIngreso, string historialClinico)
         : Nombre(nombre), DNI(dni), FechaNacimiento(fechaNacimiento), Telefono(telefono), Correo(correo), FechaIngreso(fechaIngreso), HistorialClinico(historialClinico) {
     }
+
     string getNombre() const { return Nombre; }
     string getDNI() const { return DNI; }
     string getFechaNacimiento() const { return FechaNacimiento; }
@@ -45,6 +46,7 @@ public:
     string getCorreo() const { return Correo; }
     string getFechaIngreso() const { return FechaIngreso; }
     string getHistorialClinico() const { return HistorialClinico; }
+
     void setNombre(const string& nombre) { Nombre = nombre; }
     void setDNI(const string& dni) { DNI = dni; }
     void setFechaNacimiento(const string& fechaNacimiento) { FechaNacimiento = fechaNacimiento; }
@@ -52,6 +54,7 @@ public:
     void setCorreo(const string& correo) { Correo = correo; }
     void setFechaIngreso(const string& fechaIngreso) { FechaIngreso = fechaIngreso; }
     void setHistorialClinico(const string& historialClinico) { HistorialClinico = historialClinico; }
+
     void MostrarPaciente() const {
         cout << "Nombre: " << Nombre << endl;
         cout << "DNI: " << DNI << endl;
@@ -60,6 +63,88 @@ public:
         cout << "Correo: " << Correo << endl;
         cout << "Fecha de Ingreso: " << FechaIngreso << endl;
         cout << "Historial Clinico: " << HistorialClinico << endl;
+    }
+
+    static void ModificarPaciente() {
+        cout << "Ingrese el DNI del paciente a modificar: ";
+        string dniBuscado;
+        cin >> dniBuscado;
+
+        ifstream file("pacientes.csv");
+        if (!file.is_open()) {
+            cerr << "Error al abrir el archivo de pacientes.\n";
+            return;
+        }
+
+        vector<Paciente> pacientes;
+        string linea;
+        while (getline(file, linea)) {
+            if (linea.empty()) continue;
+            stringstream ss(linea);
+            vector<string> campos;
+            string campo;
+            while (getline(ss, campo, ',')) {
+                campos.push_back(campo);
+            }
+            if (campos.size() == 7) {
+                Paciente p(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]);
+                pacientes.push_back(p);
+            }
+        }
+        file.close();
+
+        bool encontrado = false;
+        for (auto& p : pacientes) {
+            if (p.getDNI() == dniBuscado) {
+                encontrado = true;
+                cin.ignore();
+                string nombre, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico;
+                cout << "Ingrese el nuevo nombre del paciente (actual: " << p.getNombre() << "): ";
+                getline(cin, nombre);
+                if (!nombre.empty()) p.setNombre(nombre);
+
+                cout << "Ingrese la nueva fecha de nacimiento (YYYY-MM-DD, actual: " << p.getFechaNacimiento() << "): ";
+                getline(cin, fechaNacimiento);
+                if (!fechaNacimiento.empty()) p.setFechaNacimiento(fechaNacimiento);
+
+                cout << "Ingrese el nuevo telefono (actual: " << p.getTelefono() << "): ";
+                getline(cin, telefono);
+                if (!telefono.empty()) p.setTelefono(telefono);
+
+                cout << "Ingrese el nuevo correo (actual: " << p.getCorreo() << "): ";
+                getline(cin, correo);
+                if (!correo.empty()) p.setCorreo(correo);
+
+                cout << "Ingrese la nueva fecha de ingreso (YYYY-MM-DD, actual: " << p.getFechaIngreso() << "): ";
+                getline(cin, fechaIngreso);
+                if (!fechaIngreso.empty()) p.setFechaIngreso(fechaIngreso);
+
+                cout << "Ingrese el nuevo historial clinico (actual: " << p.getHistorialClinico() << "): ";
+                getline(cin, historialClinico);
+                if (!historialClinico.empty()) p.setHistorialClinico(historialClinico);
+
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            cout << "Paciente no encontrado.\n";
+            return;
+        }
+
+        ofstream fileOut("pacientes.csv", ios::trunc);
+        if (!fileOut.is_open()) {
+            cerr << "Error al abrir el archivo de pacientes para escribir.\n";
+            return;
+        }
+
+        for (auto& p : pacientes) {
+            fileOut << p.getNombre() << "," << p.getDNI() << "," << p.getFechaNacimiento() << "," << p.getTelefono()
+                << "," << p.getCorreo() << "," << p.getFechaIngreso() << "," << p.getHistorialClinico() << "\n";
+        }
+        fileOut.close();
+
+        cout << "Paciente modificado exitosamente.\n";
     }
 };
 
@@ -186,7 +271,7 @@ public:
         cin >> diaNacimiento;
         cout << "Ingrese el mes de nacimiento del medico: ";
         cin >> mesNacimiento;
-        cout << "Ingrese el anio de nacimiento del medico: ";
+        cout << "Ingrese el año de nacimiento del medico: ";
         cin >> añoNacimiento;
         cout << "Ingrese la especialidad del medico: ";
         cin >> especialidad;
@@ -276,7 +361,6 @@ public:
         cout << "--------------------------------------------------\n";
         for (const auto& usuario : usuarios) {
             cout << usuario.getNombreUsuario() << "\t\t" << usuario.getRol() << "\t";
-
             const vector<bool>& permisos = usuario.getPermisos();
             cout << "[ ";
             for (size_t i = 0; i < permisos.size(); ++i) {
@@ -287,7 +371,6 @@ public:
         cout << "--------------------------------------------------\n";
     }
 
-    // Métodos para manejo de pacientes:
     static void CrearPaciente() {
         ofstream file("pacientes.csv", ios::app);
         if (!file.is_open()) {
@@ -361,7 +444,7 @@ public:
             }
             if (campos.size() > 1 && campos[1] == dni) {
                 encontrado = true;
-                continue; // omitimos esta línea (eliminamos el paciente)
+                continue;
             }
             lineas.push_back(linea);
         }
@@ -386,6 +469,10 @@ public:
 
         cout << "Paciente eliminado exitosamente.\n";
     }
+
+    static void ModificarMedico() {
+        cout << "Funcionalidad de modificar medico no implementada.\n";
+    }
 };
 
 bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const vector<Usuario>& usuarios, Usuario& usuarioAutenticado) {
@@ -399,7 +486,6 @@ bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const
 }
 
 int main() {
-
     cout << "Bienvenido\n";
     vector<Usuario> usuarios;
     const string archivoUsuarios = "usuarios.csv";
@@ -424,69 +510,148 @@ int main() {
         cout << "Inicio de sesion exitoso como " << usuarioAutenticado.getRol() << ".\n";
 
         if (usuarioAutenticado.getRol() == "ADMINISTRADOR") {
-            char opcion;
             bool salir = false;
-
             while (!salir) {
-                cout << "Opciones:\n";
-                cout << "1. Crear nuevo usuario\n";
-                cout << "2. Mostrar lista de usuarios\n";
-                cout << "3. Crear medico\n";
-                cout << "4. Mostrar lista de medicos\n";
-                cout << "5. Guardar y salir\n";
-                cout << "6. Eliminar medico\n";
-                cout << "7. Crear paciente\n";
-                cout << "8. Mostrar pacientes\n";
-                cout << "9. Eliminar paciente\n";
+                cout << "\n--- Menu Principal ---\n";
+                cout << "1. Usuarios\n";
+                cout << "2. Medicos\n";
+                cout << "3. Pacientes\n";
+                cout << "4. Guardar y salir\n";
                 cout << "Ingrese su opcion: ";
-                cin >> opcion;
+                char opcionPrincipal;
+                cin >> opcionPrincipal;
 
-                if (opcion == '1') {
-                    if (Usuario::CrearUsuario(usuarios)) {
-                        cout << "Usuario creado exitosamente\n";
+                if (opcionPrincipal == '1') {
+                    bool salirUsuarios = false;
+                    while (!salirUsuarios) {
+                        cout << "\n--- Menu Usuarios ---\n";
+                        cout << "1. Crear nuevo usuario\n";
+                        cout << "2. Mostrar lista de usuarios\n";
+                        cout << "3. Volver al menu principal\n";
+                        cout << "Ingrese su opcion: ";
+                        char opcionUsuarios;
+                        cin >> opcionUsuarios;
+
+                        if (opcionUsuarios == '1') {
+                            if (Usuario::CrearUsuario(usuarios)) {
+                                cout << "Usuario creado exitosamente\n";
+                            }
+                        }
+                        else if (opcionUsuarios == '2') {
+                            Usuario::MostrarUsuarios(usuarios);
+                        }
+                        else if (opcionUsuarios == '3') {
+                            salirUsuarios = true;
+                        }
+                        else {
+                            cout << "Opcion no valida.\n";
+                        }
                     }
+
                 }
-                else if (opcion == '2') {
-                    Usuario::MostrarUsuarios(usuarios);
+                else if (opcionPrincipal == '2') {
+                    bool salirMedicos = false;
+                    while (!salirMedicos) {
+                        cout << "\n--- Menu Medicos ---\n";
+                        cout << "1. Crear medico\n";
+                        cout << "2. Mostrar lista de medicos\n";
+                        cout << "3. Modificar medico\n";
+                        cout << "4. Eliminar medico\n";
+                        cout << "5. Volver al menu principal\n";
+                        cout << "Ingrese su opcion: ";
+                        char opcionMedicos;
+                        cin >> opcionMedicos;
+
+                        if (opcionMedicos == '1') {
+                            Usuario::CrearMedico();
+                        }
+                        else if (opcionMedicos == '2') {
+                            Usuario::MostrarMedicos();
+                        }
+                        else if (opcionMedicos == '3') {
+                            if (usuarioAutenticado.VerificarPermiso(MODIFICAR_MEDICO)) {
+                                Usuario::ModificarMedico();
+                            }
+                            else {
+                                cout << "No tiene permiso para modificar medico.\n";
+                            }
+                        }
+                        else if (opcionMedicos == '4') {
+                            if (usuarioAutenticado.VerificarPermiso(ELIMINAR_MEDICO)) {
+                                Usuario::EliminarMedico();
+                            }
+                            else {
+                                cout << "No tiene permiso para eliminar medico.\n";
+                            }
+                        }
+                        else if (opcionMedicos == '5') {
+                            salirMedicos = true;
+                        }
+                        else {
+                            cout << "Opcion no valida.\n";
+                        }
+                    }
+
                 }
-                else if (opcion == '3') {
-                    Usuario::CrearMedico();
+                else if (opcionPrincipal == '3') {
+                    bool salirPacientes = false;
+                    while (!salirPacientes) {
+                        cout << "\n--- Menu Pacientes ---\n";
+                        cout << "1. Crear nuevo paciente\n";
+                        cout << "2. Mostrar lista de pacientes\n";
+                        cout << "3. Modificar paciente\n";
+                        cout << "4. Eliminar paciente\n";
+                        cout << "5. Volver al menu principal\n";
+                        cout << "Ingrese su opcion: ";
+                        char opcionPacientes;
+                        cin >> opcionPacientes;
+
+                        if (opcionPacientes == '1') {
+                            if (usuarioAutenticado.VerificarPermiso(CREAR_PACIENTE)) {
+                                Usuario::CrearPaciente();
+                            }
+                            else {
+                                cout << "No tiene permiso para crear pacientes.\n";
+                            }
+                        }
+                        else if (opcionPacientes == '2') {
+                            Usuario::MostrarPacientes();
+                        }
+                        else if (opcionPacientes == '3') {
+                            if (usuarioAutenticado.VerificarPermiso(MODIFICAR_PACIENTE)) {
+                                Paciente::ModificarPaciente();
+                            }
+                            else {
+                                cout << "No tiene permiso para modificar pacientes.\n";
+                            }
+                        }
+                        else if (opcionPacientes == '4') {
+                            if (usuarioAutenticado.VerificarPermiso(ELIMINAR_PACIENTE)) {
+                                Usuario::EliminarPaciente();
+                            }
+                            else {
+                                cout << "No tiene permiso para eliminar pacientes.\n";
+                            }
+                        }
+                        else if (opcionPacientes == '5') {
+                            salirPacientes = true;
+                        }
+                        else {
+                            cout << "Opcion no valida.\n";
+                        }
+                    }
+
                 }
-                else if (opcion == '4') {
-                    Usuario::MostrarMedicos();
-                }
-                else if (opcion == '5') {
+                else if (opcionPrincipal == '4') {
                     Usuario::GuardarUsuarios(usuarios, archivoUsuarios);
                     cout << "Usuarios guardados con exito\n";
                     salir = true;
                 }
-                else if (opcion == '6') {
-                    Usuario::EliminarMedico();
-                }
-                else if (opcion == '7') {
-                    if (usuarioAutenticado.VerificarPermiso(CREAR_PACIENTE)) {
-                        Usuario::CrearPaciente();
-                    }
-                    else {
-                        cout << "No tiene permiso para crear pacientes.\n";
-                    }
-                }
-                else if (opcion == '8') {
-                    Usuario::MostrarPacientes();
-                }
-                else if (opcion == '9') {
-                    if (usuarioAutenticado.VerificarPermiso(ELIMINAR_PACIENTE)) {
-                        Usuario::EliminarPaciente();
-                    }
-                    else {
-                        cout << "No tiene permiso para eliminar pacientes.\n";
-                    }
-                }
                 else {
                     cout << "Opcion no valida.\n";
                 }
-
             }
+
         }
         else {
             cout << "No tiene permisos para realizar esta accion.\n";
@@ -498,3 +663,4 @@ int main() {
 
     return 0;
 }
+
