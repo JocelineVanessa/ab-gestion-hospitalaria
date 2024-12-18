@@ -23,6 +23,54 @@ enum PermisoIndex {
     TOTAL_PERMISOS
 };
 
+class Paciente { 
+private: 
+    string Nombre; 
+    string DNI; 
+    string FechaNacimiento; 
+    string Telefono; 
+    string Correo;  
+    string FechaIngreso; 
+    string HistorialClinico; 
+
+public: 
+    Paciente() : Nombre(""), DNI(""), FechaNacimiento(""), Telefono(""), Correo(""), FechaIngreso(""), HistorialClinico("") {
+    }
+
+    Paciente(string nombre, string dni, string fechaNacimiento, string telefono, string correo, string fechaIngreso, string historialClinico) : Nombre(nombre), DNI(dni), FechaNacimiento(fechaNacimiento), Telefono(telefono), Correo(correo), FechaIngreso(fechaIngreso), HistorialClinico(historialClinico) {
+    } 
+    string getNombre() 
+        const { return Nombre; } 
+    string getDNI() 
+        const { return DNI; } 
+    string getFechaNacimiento() 
+        const { return FechaNacimiento; } 
+    string getTelefono() 
+        const { return Telefono; } 
+    string getCorreo() 
+        const { return Correo; } 
+    string getFechaIngreso() 
+        const { return FechaIngreso; } 
+    string getHistorialClinico() 
+        const { return HistorialClinico; } 
+    void setNombre(const string& nombre) { Nombre = nombre; } 
+    void setDNI(const string& dni) { DNI = dni; } 
+    void setFechaNacimiento(const string& fechaNacimiento) { FechaNacimiento = fechaNacimiento; } 
+    void setTelefono(const string& telefono) { Telefono = telefono; } 
+    void setCorreo(const string& correo) { Correo = correo; } 
+    void setFechaIngreso(const string& fechaIngreso) { FechaIngreso = fechaIngreso; } 
+    void setHistorialClinico(const string& historialClinico) { HistorialClinico = historialClinico; } 
+    void MostrarPaciente() 
+        const {
+    cout << "Nombre: " << Nombre << endl;
+    cout << "DNI: " << DNI << endl;
+    cout << "Fecha de Nacimiento: " << FechaNacimiento << endl; 
+    cout << "Telefono: " << Telefono << endl;
+    cout << "Correo: " << Correo << endl;
+    cout << "Fecha de Ingreso: " << FechaIngreso << endl;
+    cout << "Historial Clinico: " << HistorialClinico << endl; }
+};
+
 class Usuario {
 private:
     string nombreUsuario;
@@ -259,6 +307,8 @@ bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const
 }
 
 int main() {
+
+    cout << "Prueba Paciente:\n"; Paciente paciente1("Juan Perez", "12345678A", "1985-03-15", "647841234", "juanperez@gmail.com", "2024-12-14", "Sin antecedentes"); cout << "Informacion del paciente:\n"; paciente1.MostrarPaciente();
 
     cout << "Bienvenido\n";
     vector<Usuario> usuarios;
