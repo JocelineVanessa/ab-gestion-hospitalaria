@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <ctime>
+#include <limits>
 
 using namespace std;
 
@@ -178,26 +179,25 @@ public:
 class Medico {
 private:
     string nombre;
-    string apellido;
     string dni;
+    string fechaNacimiento;
     string correo;
     string telefono;
-    int añoNacimiento;
     int edad;
     string especialidad;
 public:
-    Medico() : nombre(""), apellido(""), dni(""), correo(""), telefono(""), añoNacimiento(0), edad(0), especialidad("") {}
-    Medico(string n, string a, string d, string c, string t, int anio, int e, string esp)
-        : nombre(n), apellido(a), dni(d), correo(c), telefono(t), añoNacimiento(anio), edad(e), especialidad(esp) {
+    Medico() : nombre(""), dni(""), fechaNacimiento(""), correo(""), telefono(""), edad(0), especialidad("") {}
+    Medico(string n, string d, string f, string c, string t, int e, string esp)
+        : nombre(n), dni(d), fechaNacimiento(f), correo(c), telefono(t), edad(e), especialidad(esp) {
     }
 
     void MostrarMedico() const {
-        cout << "Nombre: " << nombre << " " << apellido << endl;
+        cout << "Nombre: " << nombre << endl;
         cout << "DNI: " << dni << endl;
+        cout << "Fecha de Nacimiento: " << fechaNacimiento << endl;
+        cout << "Edad: " << edad << endl;
         cout << "Correo: " << correo << endl;
         cout << "Telefono: " << telefono << endl;
-        cout << "Año de Nacimiento: " << añoNacimiento << endl;
-        cout << "Edad: " << edad << endl;
         cout << "Especialidad: " << especialidad << endl;
         cout << "----------------------------------------------" << endl;
     }
@@ -218,16 +218,15 @@ public:
                 while (getline(ss, campo, ',')) {
                     campos.push_back(campo);
                 }
-                if (campos.size() == 8) {
+                if (campos.size() == 7) {
                     string n = campos[0];
-                    string a = campos[1];
-                    string d = campos[2];
+                    string d = campos[1];
+                    string f = campos[2];
                     string c = campos[3];
                     string t = campos[4];
-                    int anio = stoi(campos[5]);
-                    int e = stoi(campos[6]);
-                    string esp = campos[7];
-                    Medico m(n, a, d, c, t, anio, e, esp);
+                    int e = stoi(campos[5]);
+                    string esp = campos[6];
+                    Medico m(n, d, f, c, t, e, esp);
                     m.MostrarMedico();
                 }
             }
@@ -237,6 +236,28 @@ public:
         else {
             cerr << "Archivo de medicos no encontrado.\n";
         }
+    }
+
+    static int CalcularEdad(const string& fechaNacimiento) {
+        if (fechaNacimiento.size() < 10) {
+            return -1;
+        }
+
+        int añoNacimiento = stoi(fechaNacimiento.substr(0, 4));
+        int mesNacimiento = stoi(fechaNacimiento.substr(5, 2));
+        int diaNacimiento = stoi(fechaNacimiento.substr(8, 2));
+
+        time_t t = time(0);
+        tm* now = localtime(&t);
+        int añoActual = now->tm_year + 1900;
+        int mesActual = now->tm_mon + 1;
+        int diaActual = now->tm_mday;
+
+        int edad = añoActual - añoNacimiento;
+        if (mesActual < mesNacimiento || (mesActual == mesNacimiento && diaActual < diaNacimiento)) {
+            edad--;
+        }
+        return edad;
     }
 };
 
@@ -356,55 +377,39 @@ public:
             return;
         }
 
-        string nombre, apellido, dni, correo, telefono, especialidad;
-        int diaNacimiento, mesNacimiento, añoNacimiento;
-
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        string nombre, dni, fechaNacimiento, correo, telefono, especialidad;
         cout << "Ingrese el nombre del medico: ";
-        cin >> nombre;
-        cout << "Ingrese el apellido del medico: ";
-        cin >> apellido;
+        getline(cin, nombre);
         cout << "Ingrese el DNI del medico: ";
-        cin >> dni;
+        getline(cin, dni);
+        cout << "Ingrese la fecha de nacimiento del medico (YYYY-MM-DD): ";
+        getline(cin, fechaNacimiento);
         cout << "Ingrese el correo del medico: ";
-        cin >> correo;
+        getline(cin, correo);
         cout << "Ingrese el telefono del medico: ";
-        cin >> telefono;
-        cout << "Ingrese el dia de nacimiento del medico: ";
-        cin >> diaNacimiento;
-        cout << "Ingrese el mes de nacimiento del medico: ";
-        cin >> mesNacimiento;
-        cout << "Ingrese el año de nacimiento del medico: ";
-        cin >> añoNacimiento;
-
-        time_t t = time(0);
-        tm* now = localtime(&t);
-        int añoActual = now->tm_year + 1900;
-        int mesActual = now->tm_mon + 1;
-        int diaActual = now->tm_mday;
-        int edad = añoActual - añoNacimiento;
-        if (mesActual < mesNacimiento || (mesActual == mesNacimiento && diaActual < diaNacimiento)) {
-            edad--;
-        }
-
+        getline(cin, telefono);
         cout << "Ingrese la especialidad del medico: ";
-        cin >> especialidad;
+        getline(cin, especialidad);
 
-        file << nombre << "," << apellido << "," << dni << "," << correo << "," << telefono << "," << añoNacimiento << "," << edad << "," << especialidad << "\n";
+        int edad = Medico::CalcularEdad(fechaNacimiento);
+
+        file << nombre << "," << dni << "," << fechaNacimiento << "," << correo << "," << telefono << "," << edad << "," << especialidad << "\n";
         file.close();
 
         cout << "Medico creado exitosamente:\n";
-        cout << "Nombre: " << nombre << " " << apellido << "\n";
+        cout << "Nombre: " << nombre << "\n";
         cout << "DNI: " << dni << "\n";
+        cout << "Fecha de nacimiento: " << fechaNacimiento << "\n";
+        cout << "Edad: " << edad << "\n";
         cout << "Correo: " << correo << "\n";
         cout << "Telefono: " << telefono << "\n";
-        cout << "Fecha de nacimiento: " << diaNacimiento << "/" << mesNacimiento << "/" << añoNacimiento << "\n";
-        cout << "Edad: " << edad << "\n";
         cout << "Especialidad: " << especialidad << "\n";
     }
 
     static void EliminarMedico() {
-        string dni;
         cout << "Ingrese el DNI del medico a eliminar: ";
+        string dni;
         cin >> dni;
 
         fstream file("medicos.csv", ios::in | ios::out);
@@ -453,9 +458,9 @@ public:
             return;
         }
 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         string nombre, dni, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico;
         cout << "Ingrese el nombre del paciente: ";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         getline(cin, nombre);
         cout << "Ingrese el DNI del paciente: ";
         getline(cin, dni);
@@ -802,3 +807,4 @@ int main() {
 
     return 0;
 }
+
