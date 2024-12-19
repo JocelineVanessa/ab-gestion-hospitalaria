@@ -33,8 +33,7 @@ private:
     string FechaIngreso;
     string HistorialClinico;
 public:
-    Paciente() : Nombre(""), DNI(""), FechaNacimiento(""), Telefono(""), Correo(""), FechaIngreso(""), HistorialClinico("") {
-    }
+    Paciente() : Nombre(""), DNI(""), FechaNacimiento(""), Telefono(""), Correo(""), FechaIngreso(""), HistorialClinico("") {}
     Paciente(string nombre, string dni, string fechaNacimiento, string telefono, string correo, string fechaIngreso, string historialClinico)
         : Nombre(nombre), DNI(dni), FechaNacimiento(fechaNacimiento), Telefono(telefono), Correo(correo), FechaIngreso(fechaIngreso), HistorialClinico(historialClinico) {
     }
@@ -94,6 +93,7 @@ public:
         cout << "Ingrese el DNI del paciente a modificar: ";
         string dniBuscado;
         cin >> dniBuscado;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         ifstream file("pacientes.csv");
         if (!file.is_open()) {
@@ -175,6 +175,71 @@ public:
     }
 };
 
+class Medico {
+private:
+    string nombre;
+    string apellido;
+    string dni;
+    string correo;
+    string telefono;
+    int añoNacimiento;
+    int edad;
+    string especialidad;
+public:
+    Medico() : nombre(""), apellido(""), dni(""), correo(""), telefono(""), añoNacimiento(0), edad(0), especialidad("") {}
+    Medico(string n, string a, string d, string c, string t, int anio, int e, string esp)
+        : nombre(n), apellido(a), dni(d), correo(c), telefono(t), añoNacimiento(anio), edad(e), especialidad(esp) {
+    }
+
+    void MostrarMedico() const {
+        cout << "Nombre: " << nombre << " " << apellido << endl;
+        cout << "DNI: " << dni << endl;
+        cout << "Correo: " << correo << endl;
+        cout << "Telefono: " << telefono << endl;
+        cout << "Año de Nacimiento: " << añoNacimiento << endl;
+        cout << "Edad: " << edad << endl;
+        cout << "Especialidad: " << especialidad << endl;
+        cout << "----------------------------------------------" << endl;
+    }
+
+    string getDNI() const { return dni; }
+
+    static void MostrarMedicos() {
+        ifstream file("medicos.csv");
+        if (file.is_open()) {
+            cout << "Lista de medicos:\n";
+            cout << "--------------------------------------------------\n";
+            string linea;
+            while (getline(file, linea)) {
+                if (linea.empty()) continue;
+                stringstream ss(linea);
+                vector<string> campos;
+                string campo;
+                while (getline(ss, campo, ',')) {
+                    campos.push_back(campo);
+                }
+                if (campos.size() == 8) {
+                    string n = campos[0];
+                    string a = campos[1];
+                    string d = campos[2];
+                    string c = campos[3];
+                    string t = campos[4];
+                    int anio = stoi(campos[5]);
+                    int e = stoi(campos[6]);
+                    string esp = campos[7];
+                    Medico m(n, a, d, c, t, anio, e, esp);
+                    m.MostrarMedico();
+                }
+            }
+            cout << "--------------------------------------------------\n";
+            file.close();
+        }
+        else {
+            cerr << "Archivo de medicos no encontrado.\n";
+        }
+    }
+};
+
 class Usuario {
 private:
     string nombreUsuario;
@@ -184,7 +249,6 @@ private:
 
     void AsignarPermisosPorRol() {
         permisos.assign(TOTAL_PERMISOS, false);
-
         if (rol == "ADMINISTRADOR") {
             permisos[CREAR_PACIENTE] = true;
             permisos[MODIFICAR_PACIENTE] = true;
@@ -223,6 +287,17 @@ public:
 
     bool VerificarPermiso(PermisoIndex permiso) const { return permiso < permisos.size() && permisos[permiso]; }
     bool ValidarContraseña(const string& inputContraseña) const { return inputContraseña == contraseña; }
+
+    void MostrarUsuario() const {
+        cout << "Nombre de Usuario: " << nombreUsuario << endl;
+        cout << "Rol: " << rol << endl;
+        cout << "Permisos: [ ";
+        for (size_t i = 0; i < permisos.size(); ++i) {
+            cout << (permisos[i] ? "Si" : "No") << (i < permisos.size() - 1 ? ", " : " ");
+        }
+        cout << "]" << endl;
+        cout << "----------------------------------------------" << endl;
+    }
 
     static void GuardarUsuarios(const vector<Usuario>& usuarios, const string& archivo) {
         ofstream file(archivo);
@@ -362,38 +437,11 @@ public:
         file.close();
     }
 
-    static void MostrarMedicos() {
-        ifstream file("medicos.csv");
-        if (file.is_open()) {
-            string linea;
-            cout << "Lista de medicos:\n";
-            cout << "--------------------------------------------------\n";
-            while (getline(file, linea)) {
-                if (!linea.empty()) {
-                    cout << linea << "\n";
-                }
-            }
-            cout << "--------------------------------------------------\n";
-            file.close();
-        }
-        else {
-            cerr << "Archivo de medicos no encontrado.\n";
-        }
-    }
-
     static void MostrarUsuarios(const vector<Usuario>& usuarios) {
-        cout << "Lista de usuarios y permisos:\n";
+        cout << "Lista de usuarios:\n";
         cout << "--------------------------------------------------\n";
-        cout << "Nombre de Usuario\tRol\tPermisos\n";
-        cout << "--------------------------------------------------\n";
-        for (const auto& usuario : usuarios) {
-            cout << usuario.getNombreUsuario() << "\t\t" << usuario.getRol() << "\t";
-            const vector<bool>& permisos = usuario.getPermisos();
-            cout << "[ ";
-            for (size_t i = 0; i < permisos.size(); ++i) {
-                cout << (permisos[i] ? "Si" : "No") << (i < permisos.size() - 1 ? ", " : " ");
-            }
-            cout << "]\n";
+        for (const auto& u : usuarios) {
+            u.MostrarUsuario();
         }
         cout << "--------------------------------------------------\n";
     }
@@ -407,6 +455,7 @@ public:
 
         string nombre, dni, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico;
         cout << "Ingrese el nombre del paciente: ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         getline(cin, nombre);
         cout << "Ingrese el DNI del paciente: ";
         getline(cin, dni);
@@ -432,9 +481,9 @@ public:
     static void MostrarPacientes() {
         ifstream file("pacientes.csv");
         if (file.is_open()) {
-            string linea;
             cout << "Lista de pacientes:\n";
             cout << "--------------------------------------------------\n";
+            string linea;
             while (getline(file, linea)) {
                 if (linea.empty()) continue;
                 stringstream ss(linea);
@@ -457,8 +506,8 @@ public:
     }
 
     static void EliminarPaciente() {
-        string dni;
         cout << "Ingrese el DNI del paciente a eliminar: ";
+        string dni;
         cin >> dni;
 
         ifstream file("pacientes.csv");
@@ -622,7 +671,7 @@ int main() {
                             Usuario::CrearMedico();
                         }
                         else if (opcionMedicos == '2') {
-                            Usuario::MostrarMedicos();
+                            Medico::MostrarMedicos();
                         }
                         else if (opcionMedicos == '3') {
                             if (usuarioAutenticado.VerificarPermiso(MODIFICAR_MEDICO)) {
