@@ -475,6 +475,25 @@ public:
     }
 };
 
+class Reportes {
+public:
+    static void ReportePacientesAtendidos() {
+        cout << "Reporte de pacientes atendidos no implementado.\n";
+    }
+
+    static void ReporteMedicosDisponibles() {
+        cout << "Reporte de medicos disponibles no implementado.\n";
+    }
+
+    static void ReporteCitasPendientesPorDia() {
+        cout << "Reporte de citas pendientes por dia no implementado.\n";
+    }
+
+    static void ReporteCitasPendientesPorMes() {
+        cout << "Reporte de citas pendientes por mes no implementado.\n";
+    }
+};
+
 bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const vector<Usuario>& usuarios, Usuario& usuarioAutenticado) {
     for (const auto& usuario : usuarios) {
         if (usuario.getNombreUsuario() == nombreUsuario && usuario.ValidarContraseña(contraseña)) {
@@ -516,7 +535,8 @@ int main() {
                 cout << "1. Usuarios\n";
                 cout << "2. Medicos\n";
                 cout << "3. Pacientes\n";
-                cout << "4. Guardar y salir\n";
+                cout << "4. Reportes\n";
+                cout << "5. Guardar y salir\n";
                 cout << "Ingrese su opcion: ";
                 char opcionPrincipal;
                 cin >> opcionPrincipal;
@@ -643,6 +663,40 @@ int main() {
 
                 }
                 else if (opcionPrincipal == '4') {
+                    bool salirReportes = false;
+                    while (!salirReportes) {
+                        cout << "\n--- Menu Reportes ---\n";
+                        cout << "1. Reporte de pacientes atendidos\n";
+                        cout << "2. Reporte de medicos disponibles\n";
+                        cout << "3. Reporte de citas pendientes por dia\n";
+                        cout << "4. Reporte de citas pendientes por mes\n";
+                        cout << "5. Volver al menu principal\n";
+                        cout << "Ingrese su opcion: ";
+                        char opcionReportes;
+                        cin >> opcionReportes;
+
+                        if (opcionReportes == '1') {
+                            Reportes::ReportePacientesAtendidos();
+                        }
+                        else if (opcionReportes == '2') {
+                            Reportes::ReporteMedicosDisponibles();
+                        }
+                        else if (opcionReportes == '3') {
+                            Reportes::ReporteCitasPendientesPorDia();
+                        }
+                        else if (opcionReportes == '4') {
+                            Reportes::ReporteCitasPendientesPorMes();
+                        }
+                        else if (opcionReportes == '5') {
+                            salirReportes = true;
+                        }
+                        else {
+                            cout << "Opcion no valida.\n";
+                        }
+                    }
+
+                }
+                else if (opcionPrincipal == '5') {
                     Usuario::GuardarUsuarios(usuarios, archivoUsuarios);
                     cout << "Usuarios guardados con exito\n";
                     salir = true;
@@ -663,4 +717,5 @@ int main() {
 
     return 0;
 }
+
 
