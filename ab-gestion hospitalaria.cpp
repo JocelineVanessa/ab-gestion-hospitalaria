@@ -55,14 +55,39 @@ public:
     void setFechaIngreso(const string& fechaIngreso) { FechaIngreso = fechaIngreso; }
     void setHistorialClinico(const string& historialClinico) { HistorialClinico = historialClinico; }
 
+    int getEdad() const {
+        if (FechaNacimiento.size() < 10) {
+            return -1;
+        }
+
+        int añoNacimiento = stoi(FechaNacimiento.substr(0, 4));
+        int mesNacimiento = stoi(FechaNacimiento.substr(5, 2));
+        int diaNacimiento = stoi(FechaNacimiento.substr(8, 2));
+
+        time_t t = time(0);
+        tm* now = localtime(&t);
+        int añoActual = now->tm_year + 1900;
+        int mesActual = now->tm_mon + 1;
+        int diaActual = now->tm_mday;
+
+        int edad = añoActual - añoNacimiento;
+        if (mesActual < mesNacimiento || (mesActual == mesNacimiento && diaActual < diaNacimiento)) {
+            edad--;
+        }
+
+        return edad;
+    }
+
     void MostrarPaciente() const {
         cout << "Nombre: " << Nombre << endl;
         cout << "DNI: " << DNI << endl;
         cout << "Fecha de Nacimiento: " << FechaNacimiento << endl;
+        cout << "Edad: " << getEdad() << endl;
         cout << "Telefono: " << Telefono << endl;
         cout << "Correo: " << Correo << endl;
         cout << "Fecha de Ingreso: " << FechaIngreso << endl;
         cout << "Historial Clinico: " << HistorialClinico << endl;
+        cout << "----------------------------------------------" << endl;
     }
 
     static void ModificarPaciente() {
@@ -94,36 +119,38 @@ public:
         file.close();
 
         bool encontrado = false;
-        for (auto& p : pacientes) {
-            if (p.getDNI() == dniBuscado) {
-                encontrado = true;
-                cin.ignore();
-                string nombre, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico;
-                cout << "Ingrese el nuevo nombre del paciente (actual: " << p.getNombre() << "): ";
-                getline(cin, nombre);
-                if (!nombre.empty()) p.setNombre(nombre);
+        {
+            string nombre, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico;
+            for (auto& p : pacientes) {
+                if (p.getDNI() == dniBuscado) {
+                    encontrado = true;
 
-                cout << "Ingrese la nueva fecha de nacimiento (YYYY-MM-DD, actual: " << p.getFechaNacimiento() << "): ";
-                getline(cin, fechaNacimiento);
-                if (!fechaNacimiento.empty()) p.setFechaNacimiento(fechaNacimiento);
+                    cout << "Ingrese el nuevo nombre del paciente (actual: " << p.getNombre() << "): ";
+                    getline(cin, nombre);
+                    if (!nombre.empty()) p.setNombre(nombre);
 
-                cout << "Ingrese el nuevo telefono (actual: " << p.getTelefono() << "): ";
-                getline(cin, telefono);
-                if (!telefono.empty()) p.setTelefono(telefono);
+                    cout << "Ingrese la nueva fecha de nacimiento (YYYY-MM-DD, actual: " << p.getFechaNacimiento() << "): ";
+                    getline(cin, fechaNacimiento);
+                    if (!fechaNacimiento.empty()) p.setFechaNacimiento(fechaNacimiento);
 
-                cout << "Ingrese el nuevo correo (actual: " << p.getCorreo() << "): ";
-                getline(cin, correo);
-                if (!correo.empty()) p.setCorreo(correo);
+                    cout << "Ingrese el nuevo telefono (actual: " << p.getTelefono() << "): ";
+                    getline(cin, telefono);
+                    if (!telefono.empty()) p.setTelefono(telefono);
 
-                cout << "Ingrese la nueva fecha de ingreso (YYYY-MM-DD, actual: " << p.getFechaIngreso() << "): ";
-                getline(cin, fechaIngreso);
-                if (!fechaIngreso.empty()) p.setFechaIngreso(fechaIngreso);
+                    cout << "Ingrese el nuevo correo (actual: " << p.getCorreo() << "): ";
+                    getline(cin, correo);
+                    if (!correo.empty()) p.setCorreo(correo);
 
-                cout << "Ingrese el nuevo historial clinico (actual: " << p.getHistorialClinico() << "): ";
-                getline(cin, historialClinico);
-                if (!historialClinico.empty()) p.setHistorialClinico(historialClinico);
+                    cout << "Ingrese la nueva fecha de ingreso (YYYY-MM-DD, actual: " << p.getFechaIngreso() << "): ";
+                    getline(cin, fechaIngreso);
+                    if (!fechaIngreso.empty()) p.setFechaIngreso(fechaIngreso);
 
-                break;
+                    cout << "Ingrese el nuevo historial clinico (actual: " << p.getHistorialClinico() << "): ";
+                    getline(cin, historialClinico);
+                    if (!historialClinico.empty()) p.setHistorialClinico(historialClinico);
+
+                    break;
+                }
             }
         }
 
@@ -273,19 +300,19 @@ public:
         cin >> mesNacimiento;
         cout << "Ingrese el año de nacimiento del medico: ";
         cin >> añoNacimiento;
-        cout << "Ingrese la especialidad del medico: ";
-        cin >> especialidad;
 
         time_t t = time(0);
         tm* now = localtime(&t);
         int añoActual = now->tm_year + 1900;
         int mesActual = now->tm_mon + 1;
         int diaActual = now->tm_mday;
-
         int edad = añoActual - añoNacimiento;
         if (mesActual < mesNacimiento || (mesActual == mesNacimiento && diaActual < diaNacimiento)) {
             edad--;
         }
+
+        cout << "Ingrese la especialidad del medico: ";
+        cin >> especialidad;
 
         file << nombre << "," << apellido << "," << dni << "," << correo << "," << telefono << "," << añoNacimiento << "," << edad << "," << especialidad << "\n";
         file.close();
@@ -378,7 +405,6 @@ public:
             return;
         }
 
-        cin.ignore();
         string nombre, dni, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico;
         cout << "Ingrese el nombre del paciente: ";
         getline(cin, nombre);
@@ -398,7 +424,9 @@ public:
         file << nombre << "," << dni << "," << fechaNacimiento << "," << telefono << "," << correo << "," << fechaIngreso << "," << historialClinico << "\n";
         file.close();
 
+        Paciente p(nombre, dni, fechaNacimiento, telefono, correo, fechaIngreso, historialClinico);
         cout << "Paciente creado exitosamente.\n";
+        p.MostrarPaciente();
     }
 
     static void MostrarPacientes() {
@@ -408,8 +436,16 @@ public:
             cout << "Lista de pacientes:\n";
             cout << "--------------------------------------------------\n";
             while (getline(file, linea)) {
-                if (!linea.empty()) {
-                    cout << linea << "\n";
+                if (linea.empty()) continue;
+                stringstream ss(linea);
+                vector<string> campos;
+                string campo;
+                while (getline(ss, campo, ',')) {
+                    campos.push_back(campo);
+                }
+                if (campos.size() == 7) {
+                    Paciente p(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]);
+                    p.MostrarPaciente();
                 }
             }
             cout << "--------------------------------------------------\n";
@@ -717,5 +753,3 @@ int main() {
 
     return 0;
 }
-
-
