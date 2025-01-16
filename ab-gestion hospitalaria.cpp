@@ -157,7 +157,7 @@ public:
         cout << "Ingrese la especialidad del medico: ";
         getline(cin, especialidad);
 
-        int edad = medico::CalcularEdad(fechaNacimiento);
+        int edad = Medico::CalcularEdad(fechaNacimiento);
 
         file << nombre << "," << dni << "," << fechaNacimiento << "," << correo << "," << telefono << "," << edad << "," << especialidad << "\n";
         file.close();

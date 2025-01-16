@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <ctime>
+#include <vector>
 
 using namespace std;
 
@@ -37,10 +38,11 @@ void Medico::MostrarMedico() const {
     cout << "Especialidad: " << especialidad << endl;
     cout << "----------------------------------------------" << endl;
 }
+
 void Medico::MostrarMedicos() {
     ifstream file("medicos.csv");
     if (file.is_open()) {
-        cout << "Lista de medicos:\n";
+        cout << "Lista de médicos:\n";
         cout << "--------------------------------------------------\n";
         string linea;
         while (getline(file, linea)) {
@@ -67,21 +69,23 @@ void Medico::MostrarMedicos() {
         file.close();
     }
     else {
-        cerr << "Archivo de medicos no encontrado.\n";
+        cerr << "Archivo de médicos no encontrado.\n";
     }
+}
 
 int Medico::CalcularEdad(const string& fechaNacimiento) {
-    if (FechaNacimiento.size() < 10) {
+    if (fechaNacimiento.size() < 10) {
         return -1;
     }
 
-    int añoNacimiento = stoi(FechaNacimiento.substr(0, 4));
-    int mesNacimiento = stoi(FechaNacimiento.substr(5, 2));
-    int diaNacimiento = stoi(FechaNacimiento.substr(8, 2));
+    int añoNacimiento = stoi(fechaNacimiento.substr(0, 4));
+    int mesNacimiento = stoi(fechaNacimiento.substr(5, 2));
+    int diaNacimiento = stoi(fechaNacimiento.substr(8, 2));
 
     time_t t = time(0);
     struct tm now;
     localtime_s(&now, &t);
+
     int añoActual = now.tm_year + 1900;
     int mesActual = now.tm_mon + 1;
     int diaActual = now.tm_mday;

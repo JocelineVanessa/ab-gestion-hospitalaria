@@ -13,10 +13,11 @@ private:
     string telefono;
     int edad;
     string especialidad;
+
 public:
     Medico();
     Medico(string nombre, string dni, string fechaNacimiento, string correo, string telefono, int edad, string especialidad);
-       
+
     string getNombre() const;
     string getDNI() const;
     string getFechaNacimiento() const;
@@ -39,5 +40,6 @@ public:
 };
 
 #endif
+
 
    
