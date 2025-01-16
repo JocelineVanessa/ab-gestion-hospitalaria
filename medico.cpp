@@ -28,6 +28,43 @@ void Medico::setTelefono(const string& telefono) { this->telefono = telefono; }
 void Medico::setEdad(int edad) { this->edad = edad; }
 void Medico::setEspecialidad(const string& especialidad) { this->especialidad = especialidad; }
 
+void Medico::CrearMedico() {
+    ofstream file("medicos.csv", ios::app);
+    if (!file.is_open()) {
+        cerr << "Error al abrir el archivo para guardar el médico.\n";
+        return;
+    }
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    string nombre, dni, fechaNacimiento, correo, telefono, especialidad;
+    cout << "Ingrese el nombre del médico: ";
+    getline(cin, nombre);
+    cout << "Ingrese el DNI del médico: ";
+    getline(cin, dni);
+    cout << "Ingrese la fecha de nacimiento del médico (YYYY-MM-DD): ";
+    getline(cin, fechaNacimiento);
+    cout << "Ingrese el correo del médico: ";
+    getline(cin, correo);
+    cout << "Ingrese el teléfono del médico: ";
+    getline(cin, telefono);
+    cout << "Ingrese la especialidad del médico: ";
+    getline(cin, especialidad);
+
+    int edad = Medico::CalcularEdad(fechaNacimiento);
+
+    file << nombre << "," << dni << "," << fechaNacimiento << "," << correo << "," << telefono << "," << edad << "," << especialidad << "\n";
+    file.close();
+
+    cout << "Médico creado exitosamente:\n";
+    cout << "Nombre: " << nombre << "\n";
+    cout << "DNI: " << dni << "\n";
+    cout << "Fecha de nacimiento: " << fechaNacimiento << "\n";
+    cout << "Edad: " << edad << "\n";
+    cout << "Correo: " << correo << "\n";
+    cout << "Teléfono: " << telefono << "\n";
+    cout << "Especialidad: " << especialidad << "\n";
+}
+
 void Medico::MostrarMedico() const {
     cout << "Nombre: " << nombre << endl;
     cout << "DNI: " << dni << endl;
@@ -96,4 +133,53 @@ int Medico::CalcularEdad(const string& fechaNacimiento) {
     }
 
     return edad;
+}
+
+void Medico::EliminarMedico() {
+    cout << "Ingrese el DNI del médico a eliminar: ";
+    string dni;
+    cin >> dni;
+
+    ifstream file("medicos.csv");
+    if (!file.is_open()) {
+        cerr << "Error al abrir el archivo de médicos.\n";
+        return;
+    }
+
+    vector<string> lineas;
+    string linea;
+    bool encontrado = false;
+
+    while (getline(file, linea)) {
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+        if (campos.size() > 1 && campos[1] == dni) {
+            encontrado = true;
+            continue;
+        }
+        lineas.push_back(linea);
+    }
+    file.close();
+
+    if (!encontrado) {
+        cout << "Médico no encontrado.\n";
+        return;
+    }
+
+    ofstream fileOut("medicos.csv", ios::trunc);
+    if (!fileOut.is_open()) {
+        cerr << "Error al abrir el archivo de médicos para escribir.\n";
+        return;
+    }
+
+    for (auto& l : lineas) {
+        fileOut << l << "\n";
+    }
+    fileOut.close();
+
+    cout << "Médico eliminado exitosamente.\n";
 }
