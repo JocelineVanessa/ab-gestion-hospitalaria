@@ -38,6 +38,9 @@ public:
     int getEdad() const;
     void MostrarPaciente() const;
     static void ModificarPaciente();
+    static void CrearPaciente();
+    static void MostrarPacientes();
+    static void EliminarPaciente();
 };
 
 #endif 
