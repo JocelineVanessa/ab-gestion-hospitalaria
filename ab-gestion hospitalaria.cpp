@@ -20,11 +20,6 @@ using namespace std;
         cout << "--------------------------------------------------\n";
     }
 
-    static void ModificarMedico() {
-        cout << "Funcionalidad de modificar medico no implementada.\n";
-    }
-};
-
 class Reportes {
 public:
     static void ReportePacientesAtendidos() {

@@ -183,3 +183,88 @@ void Medico::EliminarMedico() {
 
     cout << "Médico eliminado exitosamente.\n";
 }
+
+void Medico::ModificarMedico() {
+    cout << "Ingrese el DNI del médico a modificar: ";
+    string dniBuscado;
+    cin >> dniBuscado;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    ifstream file("medicos.csv");
+    if (!file.is_open()) {
+        cerr << "Error al abrir el archivo de médicos.\n";
+        return;
+    }
+
+    vector<Medico> medicos;
+    string linea;
+    while (getline(file, linea)) {
+        if (linea.empty()) continue;
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+        if (campos.size() == 7) {
+            Medico m(campos[0], campos[1], campos[2], campos[3], campos[4], stoi(campos[5]), campos[6]);
+            medicos.push_back(m);
+        }
+    }
+    file.close();
+
+    bool encontrado = false;
+    for (auto& medico : medicos) {
+        if (medico.getDNI() == dniBuscado) {
+            encontrado = true;
+
+            string nombre, fechaNacimiento, correo, telefono, especialidad;
+            cout << "Ingrese el nuevo nombre del médico (actual: " << medico.getNombre() << "): ";
+            getline(cin, nombre);
+            if (!nombre.empty()) medico.setNombre(nombre);
+
+            cout << "Ingrese la nueva fecha de nacimiento (YYYY-MM-DD, actual: " << medico.getFechaNacimiento() << "): ";
+            getline(cin, fechaNacimiento);
+            if (!fechaNacimiento.empty()) medico.setFechaNacimiento(fechaNacimiento);
+
+            cout << "Ingrese el nuevo correo (actual: " << medico.getCorreo() << "): ";
+            getline(cin, correo);
+            if (!correo.empty()) medico.setCorreo(correo);
+
+            cout << "Ingrese el nuevo teléfono (actual: " << medico.getTelefono() << "): ";
+            getline(cin, telefono);
+            if (!telefono.empty()) medico.setTelefono(telefono);
+
+            cout << "Ingrese la nueva especialidad (actual: " << medico.getEspecialidad() << "): ";
+            getline(cin, especialidad);
+            if (!especialidad.empty()) medico.setEspecialidad(especialidad);
+
+            // Actualiza la edad si la fecha de nacimiento fue modificada
+            if (!fechaNacimiento.empty()) {
+                medico.setEdad(Medico::CalcularEdad(fechaNacimiento));
+            }
+
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        cout << "Médico no encontrado.\n";
+        return;
+    }
+
+    ofstream fileOut("medicos.csv", ios::trunc);
+    if (!fileOut.is_open()) {
+        cerr << "Error al abrir el archivo de médicos para escribir.\n";
+        return;
+    }
+
+    for (const auto& medico : medicos) {
+        fileOut << medico.getNombre() << "," << medico.getDNI() << "," << medico.getFechaNacimiento() << ","
+            << medico.getCorreo() << "," << medico.getTelefono() << "," << medico.getEdad() << ","
+            << medico.getEspecialidad() << "\n";
+    }
+    fileOut.close();
+
+    cout << "Médico modificado exitosamente.\n";
+}

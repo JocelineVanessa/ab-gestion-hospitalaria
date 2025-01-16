@@ -39,6 +39,7 @@ public:
     static int CalcularEdad(const string& fechaNacimiento);
     static void CrearMedico();
     static void EliminarMedico();
+    static void ModificarMedico();
 
 };
 
