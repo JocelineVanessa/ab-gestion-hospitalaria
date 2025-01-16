@@ -6,6 +6,7 @@
 #include <ctime>
 #include <limits>
 #include "Paciente.h"
+#include "Medico.h"
 
 using namespace std;
 
@@ -23,92 +24,6 @@ enum PermisoIndex {
     HISTORIAL_PACIENTE,
     MODIFICAR_HISTORIAL_PACIENTE,
     TOTAL_PERMISOS
-};
-
-
-class Medico {
-private:
-    string nombre;
-    string dni;
-    string fechaNacimiento;
-    string correo;
-    string telefono;
-    int edad;
-    string especialidad;
-public:
-    Medico() : nombre(""), dni(""), fechaNacimiento(""), correo(""), telefono(""), edad(0), especialidad("") {}
-    Medico(string n, string d, string f, string c, string t, int e, string esp)
-        : nombre(n), dni(d), fechaNacimiento(f), correo(c), telefono(t), edad(e), especialidad(esp) {
-    }
-
-    void MostrarMedico() const {
-        cout << "Nombre: " << nombre << endl;
-        cout << "DNI: " << dni << endl;
-        cout << "Fecha de Nacimiento: " << fechaNacimiento << endl;
-        cout << "Edad: " << edad << endl;
-        cout << "Correo: " << correo << endl;
-        cout << "Telefono: " << telefono << endl;
-        cout << "Especialidad: " << especialidad << endl;
-        cout << "----------------------------------------------" << endl;
-    }
-
-    string getDNI() const { return dni; }
-
-    static void MostrarMedicos() {
-        ifstream file("medicos.csv");
-        if (file.is_open()) {
-            cout << "Lista de medicos:\n";
-            cout << "--------------------------------------------------\n";
-            string linea;
-            while (getline(file, linea)) {
-                if (linea.empty()) continue;
-                stringstream ss(linea);
-                vector<string> campos;
-                string campo;
-                while (getline(ss, campo, ',')) {
-                    campos.push_back(campo);
-                }
-                if (campos.size() == 7) {
-                    string n = campos[0];
-                    string d = campos[1];
-                    string f = campos[2];
-                    string c = campos[3];
-                    string t = campos[4];
-                    int e = stoi(campos[5]);
-                    string esp = campos[6];
-                    Medico m(n, d, f, c, t, e, esp);
-                    m.MostrarMedico();
-                }
-            }
-            cout << "--------------------------------------------------\n";
-            file.close();
-        }
-        else {
-            cerr << "Archivo de medicos no encontrado.\n";
-        }
-    }
-
-    static int CalcularEdad(const string& fechaNacimiento) {
-        if (fechaNacimiento.size() < 10) {
-            return -1;
-        }
-
-        int añoNacimiento = stoi(fechaNacimiento.substr(0, 4));
-        int mesNacimiento = stoi(fechaNacimiento.substr(5, 2));
-        int diaNacimiento = stoi(fechaNacimiento.substr(8, 2));
-
-        time_t t = time(0);
-        tm* now = localtime(&t);
-        int añoActual = now->tm_year + 1900;
-        int mesActual = now->tm_mon + 1;
-        int diaActual = now->tm_mday;
-
-        int edad = añoActual - añoNacimiento;
-        if (mesActual < mesNacimiento || (mesActual == mesNacimiento && diaActual < diaNacimiento)) {
-            edad--;
-        }
-        return edad;
-    }
 };
 
 class Usuario {
@@ -242,7 +157,7 @@ public:
         cout << "Ingrese la especialidad del medico: ";
         getline(cin, especialidad);
 
-        int edad = Medico::CalcularEdad(fechaNacimiento);
+        int edad = medico::CalcularEdad(fechaNacimiento);
 
         file << nombre << "," << dni << "," << fechaNacimiento << "," << correo << "," << telefono << "," << edad << "," << especialidad << "\n";
         file.close();
