@@ -40,7 +40,7 @@ void Usuario::AsignarPermisosPorRol() {
 
 string Usuario::getNombreUsuario() const { return nombreUsuario; }
 string Usuario::getRol() const { return rol; }
-const vector<bool>& getPermisos() const { return permisos; }
+const vector<bool>& Usuario::getPermisos() const { return permisos; }
 
 bool Usuario::VerificarPermiso(PermisoIndex permiso) const { return permiso < permisos.size() && permisos[permiso]; }
 bool Usuario::ValidarContraseña(const string& inputContraseña) const { return inputContraseña == contraseña; }
@@ -104,4 +104,13 @@ bool Usuario::CrearUsuario(vector<Usuario>& usuarios) {
     }
     usuarios.push_back(Usuario(nombre, contraseña, rol));
     return true;
+}
+
+void Usuario::MostrarUsuarios(const vector<Usuario>& usuarios) {
+    cout << "Lista de usuarios:\n";
+    cout << "--------------------------------------------------\n";
+    for (const auto& u : usuarios) {
+        u.MostrarUsuario();
+    }
+    cout << "--------------------------------------------------\n";
 }

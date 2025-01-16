@@ -43,5 +43,6 @@ public:
     static void GuardarUsuarios(const vector<Usuario>& usuarios, const string& archivo);
     static void CargarUsuarios(vector<Usuario>& usuarios, const string& archivo);
     static bool CrearUsuario(vector<Usuario>& usuarios);
+    static void MostrarUsuarios(const vector<Usuario>& usuarios);
 };
 #endif 

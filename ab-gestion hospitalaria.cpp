@@ -11,15 +11,6 @@
 
 using namespace std;    
 
-    static void MostrarUsuarios(const vector<Usuario>& usuarios) {
-        cout << "Lista de usuarios:\n";
-        cout << "--------------------------------------------------\n";
-        for (const auto& u : usuarios) {
-            u.MostrarUsuario();
-        }
-        cout << "--------------------------------------------------\n";
-    }
-
 class Reportes {
 public:
     static void ReportePacientesAtendidos() {
