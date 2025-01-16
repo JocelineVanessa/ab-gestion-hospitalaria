@@ -38,10 +38,11 @@ int Paciente::getEdad() const {
     int diaNacimiento = stoi(FechaNacimiento.substr(8, 2));
 
     time_t t = time(0);
-    tm* now = localtime(&t);
-    int añoActual = now->tm_year + 1900;
-    int mesActual = now->tm_mon + 1;
-    int diaActual = now->tm_mday;
+    struct tm now;
+    localtime_s (&now,&t);
+    int añoActual = now.tm_year + 1900;
+    int mesActual = now.tm_mon + 1;
+    int diaActual = now.tm_mday;
 
     int edad = añoActual - añoNacimiento;
     if (mesActual < mesNacimiento || (mesActual == mesNacimiento && diaActual < diaNacimiento)) {

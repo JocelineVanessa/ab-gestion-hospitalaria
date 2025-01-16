@@ -31,7 +31,7 @@ public:
     void setDNI(const string& dni);
     void setFechaNacimiento(const string& fechaNacimiento);
     void setTelefono(const string& telefono);
-    void setCorreo(const string& correo) { Correo = correo; }
+    void setCorreo(const string& correo);
     void setFechaIngreso(const string& fechaIngreso);
     void setHistorialClinico(const string& historialClinico);
 
