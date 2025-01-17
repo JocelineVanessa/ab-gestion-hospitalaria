@@ -9,6 +9,7 @@
 #include "Medico.h"
 #include "Usuario.h"
 #include "Reportes.h"
+#include "Citas.h"
 
 using namespace std;    
 
@@ -53,8 +54,9 @@ int main() {
                 cout << "1. Usuarios\n";
                 cout << "2. Medicos\n";
                 cout << "3. Pacientes\n";
-                cout << "4. Reportes\n";
-                cout << "5. Guardar y salir\n";
+                cout << "4. Citas\n";
+                cout << "5. Reportes\n";
+                cout << "6. Guardar y salir\n";
                 cout << "Ingrese su opcion: ";
                 char opcionPrincipal;
                 cin >> opcionPrincipal;
@@ -181,6 +183,27 @@ int main() {
 
                 }
                 else if (opcionPrincipal == '4') {
+                    bool salirCitas = false;
+                    while (!salirCitas) {
+                        cout << "\n--- Menu Citas ---\n";
+                        cout << "1. Crear nueva cita\n";
+                        cout << "2. Volver al menu principal\n";
+                        cout << "Ingrese su opcion: ";
+                        char opcionCitas;
+                        cin >> opcionCitas;
+
+                        if (opcionCitas == '1') {
+                            Citas::CrearCita();
+                        }
+                        else if (opcionCitas == '2') {
+                            salirCitas = true;
+                        }
+                        else {
+                            cout << "Opcion no valida.\n";
+                        }
+                    }
+                    }
+                else if (opcionPrincipal == '5') {
                     bool salirReportes = false;
                     while (!salirReportes) {
                         cout << "\n--- Menu Reportes ---\n";
@@ -214,7 +237,7 @@ int main() {
                     }
 
                 }
-                else if (opcionPrincipal == '5') {
+                else if (opcionPrincipal == '6') {
                     Usuario::GuardarUsuarios(usuarios, archivoUsuarios);
                     cout << "Usuarios guardados con exito\n";
                     salir = true;
