@@ -8,27 +8,9 @@
 #include "Paciente.h"
 #include "Medico.h"
 #include "Usuario.h"
+#include "Reportes.h"
 
 using namespace std;    
-
-class Reportes {
-public:
-    static void ReportePacientesAtendidos() {
-        cout << "Reporte de pacientes atendidos no implementado.\n";
-    }
-
-    static void ReporteMedicosDisponibles() {
-        cout << "Reporte de medicos disponibles no implementado.\n";
-    }
-
-    static void ReporteCitasPendientesPorDia() {
-        cout << "Reporte de citas pendientes por dia no implementado.\n";
-    }
-
-    static void ReporteCitasPendientesPorMes() {
-        cout << "Reporte de citas pendientes por mes no implementado.\n";
-    }
-};
 
 bool IniciarSesion(const string& nombreUsuario, const string& contraseña, const vector<Usuario>& usuarios, Usuario& usuarioAutenticado) {
     for (const auto& usuario : usuarios) {
@@ -253,4 +235,3 @@ int main() {
 
     return 0;
 }
-
