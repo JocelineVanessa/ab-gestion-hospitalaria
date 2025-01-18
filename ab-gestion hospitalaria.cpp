@@ -134,8 +134,9 @@ int main() {
                         cout << "2. Mostrar lista de pacientes\n";
                         cout << "3. Modificar paciente\n";
                         cout << "4. Buscar paciente por DNI\n";
-                        cout << "5. Eliminar paciente\n";
-                        cout << "6. Volver al menu principal\n";
+                        cout << "5. Buscar paciente por Nombre\n";
+                        cout << "6. Eliminar paciente\n";
+                        cout << "7. Volver al menu principal\n";
                         cout << "Ingrese su opcion: ";
                         char opcionPacientes;
                         cin >> opcionPacientes;
@@ -163,6 +164,9 @@ int main() {
                             Paciente::BuscarPacientePorDNI();
                         }
                         else if (opcionPacientes == '5') {
+                            Paciente::BuscarPacientePorNombre();
+                        }
+                        else if (opcionPacientes == '6') {
                             if (usuarioAutenticado.VerificarPermiso(ELIMINAR_PACIENTE)) {
                                 Paciente::EliminarPaciente();
                             }

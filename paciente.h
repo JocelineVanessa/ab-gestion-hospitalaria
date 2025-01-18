@@ -41,6 +41,7 @@ public:
     static void CrearPaciente();
     static void MostrarPacientes();
     static void BuscarPacientePorDNI();
+    static void BuscarPacientePorNombre();
     static void EliminarPaciente();
 };
 

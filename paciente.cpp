@@ -245,6 +245,45 @@ void Paciente::BuscarPacientePorDNI() {
     file.close();
 }
 
+void Paciente::BuscarPacientePorNombre() {
+    cout << "Ingrese el nombre del paciente a buscar: ";
+    string nombreBuscado;
+    cin.ignore();
+    getline(cin, nombreBuscado);
+
+    ifstream file("pacientes.csv");
+    if (!file.is_open()) {
+        cerr << "Error al abrir el archivo de pacientes.\n";
+        return;
+    }
+
+    string linea;
+    bool encontrado = false;
+
+    while (getline(file, linea)) {
+        if (linea.empty()) continue;
+
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+
+        if (campos.size() == 7 && campos[0] == nombreBuscado) {
+            Paciente p(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]);
+            p.MostrarPaciente();
+            encontrado = true;
+        }
+    }
+
+    if (!encontrado) {
+        cout << "Paciente " << nombreBuscado << " no encontrado.\n";
+    }
+
+    file.close();
+}
+
 void Paciente::EliminarPaciente() {
     cout << "Ingrese el DNI del paciente a eliminar: ";
     string dni;
