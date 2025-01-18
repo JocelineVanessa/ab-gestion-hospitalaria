@@ -206,6 +206,45 @@ void Paciente::MostrarPacientes() {
     }
 }
 
+void Paciente::BuscarPacientePorDNI() {
+    cout << "Ingrese el DNI del paciente a buscar: ";
+    string dniBuscado;
+    cin >> dniBuscado;
+
+    ifstream file("pacientes.csv");
+    if (!file.is_open()) {
+        cerr << "Error al abrir el archivo de pacientes.\n";
+        return;
+    }
+
+    string linea;
+    bool encontrado = false;
+
+    while (getline(file, linea)) {
+        if (linea.empty()) continue;
+
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+
+        if (campos.size() == 7 && campos[1] == dniBuscado) { // Comparar con el campo DNI
+            Paciente p(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]);
+            p.MostrarPaciente();
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        cout << "Paciente con DNI " << dniBuscado << " no encontrado.\n";
+    }
+
+    file.close();
+}
+
 void Paciente::EliminarPaciente() {
     cout << "Ingrese el DNI del paciente a eliminar: ";
     string dni;

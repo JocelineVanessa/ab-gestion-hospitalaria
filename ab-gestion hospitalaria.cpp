@@ -133,8 +133,9 @@ int main() {
                         cout << "1. Crear nuevo paciente\n";
                         cout << "2. Mostrar lista de pacientes\n";
                         cout << "3. Modificar paciente\n";
-                        cout << "4. Eliminar paciente\n";
-                        cout << "5. Volver al menu principal\n";
+                        cout << "4. Buscar paciente por DNI\n";
+                        cout << "5. Eliminar paciente\n";
+                        cout << "6. Volver al menu principal\n";
                         cout << "Ingrese su opcion: ";
                         char opcionPacientes;
                         cin >> opcionPacientes;
@@ -159,6 +160,9 @@ int main() {
                             }
                         }
                         else if (opcionPacientes == '4') {
+                            Paciente::BuscarPacientePorDNI();
+                        }
+                        else if (opcionPacientes == '5') {
                             if (usuarioAutenticado.VerificarPermiso(ELIMINAR_PACIENTE)) {
                                 Paciente::EliminarPaciente();
                             }
@@ -166,7 +170,7 @@ int main() {
                                 cout << "No tiene permiso para eliminar pacientes.\n";
                             }
                         }
-                        else if (opcionPacientes == '5') {
+                        else if (opcionPacientes == '6') {
                             salirPacientes = true;
                         }
                         else {
