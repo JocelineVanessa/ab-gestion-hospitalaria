@@ -117,7 +117,7 @@ void Citas::ModificarCita() {
             cout << "Nueva Fecha (YYYY-MM-DD): ";
             cin >> campos[3];
 
-            linea = campos[0] + "," + campos[1] + "," + campos[2] + "," + campos[3] ];
+            linea = campos[0] + "," + campos[1] + "," + campos[2] + "," + campos[3];
         }
         lineas.push_back(linea);
     }
