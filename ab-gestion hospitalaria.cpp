@@ -4,6 +4,7 @@
 #include "Reportes.h"
 #include "Citas.h"
 #include "OtrosServicios.h"
+#include "CopiaSeguridad.h"
 
 using namespace std;    
 
@@ -51,7 +52,8 @@ int main() {
                 cout << "4. Citas\n";
                 cout << "5. Reportes\n";
                 cout << "6. Otros servicios\n";
-                cout << "7. Guardar y salir\n";
+                cout << "7. Copia de seguridad\n";
+                cout << "8. Guardar y salir\n";
                 cout << "Ingrese su opcion: ";
                 char opcionPrincipal;
                 cin >> opcionPrincipal;
@@ -294,8 +296,20 @@ int main() {
                             cout << "Opcion no valida.\n";
                         }
                     }
-}
+                }
                 else if (opcionPrincipal == '7') {
+                    char confirmar;
+                    cout << "Desea realizar una copia de seguridad de los archivos? (s/n): ";
+                    cin >> confirmar;
+                if (confirmar == 's' || confirmar == 'S') {
+                        CopiaSeguridad::RealizarCopiaSeguridad();
+                    }
+                else {
+                        cout << "Copia de seguridad cancelada.\n";
+                        }
+                    }
+                
+                else if (opcionPrincipal == '8') {
                     Usuario::GuardarUsuarios(usuarios, archivoUsuarios);
                     cout << "Usuarios guardados con exito\n";
                     salir = true;
@@ -304,7 +318,6 @@ int main() {
                     cout << "Opcion no valida.\n";
                 }
             }
-
         }
         else {
             cout << "No tiene permisos para realizar esta accion.\n";
