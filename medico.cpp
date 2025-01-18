@@ -268,3 +268,41 @@ void Medico::ModificarMedico() {
 
     cout << "Médico modificado exitosamente.\n";
 }
+
+void Medico::ListaMedicosPorEspecialidad(const string& especialidad) {
+    ifstream file("medicos.csv");
+    if (!file.is_open()) {
+        cerr << "Error al abrir el archivo de médicos.\n";
+        return;
+    }
+
+    string linea;
+    bool encontrado = false;
+
+    cout << "Médicos con especialidad '" << especialidad << "':\n";
+    cout << "----------------------------------------------\n";
+
+    while (getline(file, linea)) {
+        if (linea.empty()) continue;
+
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+
+        if (campos.size() == 7 && campos[6] == especialidad) { 
+            Medico medico(campos[0], campos[1], campos[2], campos[3], campos[4], stoi(campos[5]), campos[6]);
+            medico.MostrarMedico();
+            encontrado = true;
+        }
+    }
+
+    if (!encontrado) {
+        cout << "No se encontraron médicos con la especialidad '" << especialidad << "'.\n";
+    }
+
+    file.close();
+}

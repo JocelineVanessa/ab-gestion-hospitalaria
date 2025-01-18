@@ -40,6 +40,7 @@ public:
     static void CrearMedico();
     static void EliminarMedico();
     static void ModificarMedico();
+    static void ListaMedicosPorEspecialidad(const string& especialidad);
 
 };
 

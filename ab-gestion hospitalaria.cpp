@@ -90,7 +90,8 @@ int main() {
                         cout << "2. Mostrar lista de medicos\n";
                         cout << "3. Modificar medico\n";
                         cout << "4. Eliminar medico\n";
-                        cout << "5. Volver al menu principal\n";
+                        cout << "5. Lista medicos por especialidad\n";
+                        cout << "6. Volver al menu principal\n";
                         cout << "Ingrese su opcion: ";
                         char opcionMedicos;
                         cin >> opcionMedicos;
@@ -118,6 +119,13 @@ int main() {
                             }
                         }
                         else if (opcionMedicos == '5') {
+                            string especialidad;
+                            cout << "Ingrese la especialidad: ";
+                            cin.ignore();
+                            getline(cin, especialidad);
+                            Medico::ListaMedicosPorEspecialidad(especialidad);
+                        }
+                        else if (opcionMedicos == '6') {
                             salirMedicos = true;
                         }
                         else {
@@ -174,7 +182,7 @@ int main() {
                                 cout << "No tiene permiso para eliminar pacientes.\n";
                             }
                         }
-                        else if (opcionPacientes == '6') {
+                        else if (opcionPacientes == '7') {
                             salirPacientes = true;
                         }
                         else {
