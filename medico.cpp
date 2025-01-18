@@ -4,6 +4,7 @@
 #include <sstream>
 #include <ctime>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -238,8 +239,6 @@ void Medico::ModificarMedico() {
             cout << "Ingrese la nueva especialidad (actual: " << medico.getEspecialidad() << "): ";
             getline(cin, especialidad);
             if (!especialidad.empty()) medico.setEspecialidad(especialidad);
-
-            // Actualiza la edad si la fecha de nacimiento fue modificada
             if (!fechaNacimiento.empty()) {
                 medico.setEdad(Medico::CalcularEdad(fechaNacimiento));
             }
@@ -305,4 +304,69 @@ void Medico::ListaMedicosPorEspecialidad(const string& especialidad) {
     }
 
     file.close();
+}
+
+void Medico::ListaMedicosDisponiblesPorMes(const string& mes) {
+    ifstream medicosFile("medicos.csv");
+    ifstream citasFile("citas.csv");
+
+    if (!medicosFile.is_open() || !citasFile.is_open()) {
+        cerr << "Error al abrir los archivos necesarios.\n";
+        return;
+    }
+
+    map<string, vector<string>> citasPorMedico;
+    string linea;
+
+    while (getline(citasFile, linea)) {
+        if (linea.empty()) continue;
+
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+
+        if (campos.size() >= 2 && campos[0].substr(5, 2) == mes) { 
+            citasPorMedico[campos[3]].push_back(campos[0]);
+        }
+    }
+    citasFile.close();
+
+    cout << "Disponibilidad de médicos en el mes " << mes << ":\n";
+    cout << "----------------------------------------------\n";
+
+    while (getline(medicosFile, linea)) {
+        if (linea.empty()) continue;
+
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+
+        if (campos.size() == 7) {
+            Medico medico(campos[0], campos[1], campos[2], campos[3], campos[4], stoi(campos[5]), campos[6]);
+            string dni = medico.getDNI();
+
+            if (citasPorMedico.find(dni) == citasPorMedico.end()) {
+                cout << "Disponible todo el mes:\n";
+                medico.MostrarMedico();
+            }
+            else {
+                cout << "Citas en el mes:\n";
+                medico.MostrarMedico();
+                cout << "Fechas de citas:\n";
+                for (const string& fecha : citasPorMedico[dni]) {
+                    cout << " - " << fecha << "\n";
+                }
+            }
+        }
+    }
+
+    medicosFile.close();
 }

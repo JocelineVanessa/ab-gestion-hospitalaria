@@ -41,7 +41,7 @@ public:
     static void EliminarMedico();
     static void ModificarMedico();
     static void ListaMedicosPorEspecialidad(const string& especialidad);
-
+    static void ListaMedicosDisponiblesPorMes(const string& mes);
 };
 
 #endif

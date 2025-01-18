@@ -91,7 +91,8 @@ int main() {
                         cout << "3. Modificar medico\n";
                         cout << "4. Eliminar medico\n";
                         cout << "5. Lista medicos por especialidad\n";
-                        cout << "6. Volver al menu principal\n";
+                        cout << "6. Lista medicos disponibles por mes\n";
+                        cout << "7. Volver al menu principal\n";
                         cout << "Ingrese su opcion: ";
                         char opcionMedicos;
                         cin >> opcionMedicos;
@@ -126,6 +127,12 @@ int main() {
                             Medico::ListaMedicosPorEspecialidad(especialidad);
                         }
                         else if (opcionMedicos == '6') {
+                            string mes;
+                            cout << "Ingrese el mes (MM): ";
+                            cin >> mes;
+                            Medico::ListaMedicosDisponiblesPorMes(mes);
+                        }
+                        else if (opcionMedicos == '7') {
                             salirMedicos = true;
                         }
                         else {
