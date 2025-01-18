@@ -245,7 +245,10 @@ int main() {
                         cin >> opcionReportes;
 
                         if (opcionReportes == '1') {
-                            Reportes::ReportePacientesAtendidos();
+                            cout << "Ingrese la fecha para el reporte (YYYY-MM-DD): ";
+                            string fechaReporte;
+                            cin >> fechaReporte;
+                            Reportes::ReportePacientesAtendidos(fechaReporte);
                         }
                         else if (opcionReportes == '2') {
                             Reportes::ReporteMedicosDisponibles();

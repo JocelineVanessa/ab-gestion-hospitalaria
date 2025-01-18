@@ -11,7 +11,7 @@ using namespace std;
 
 class Reportes {
 public:
-    static void ReportePacientesAtendidos();
+    static void ReportePacientesAtendidos(const std::string& fecha);
     static void ReporteMedicosDisponibles();
     static void ReporteCitasPendientesPorDia();
     static void ReporteCitasPendientesPorMes();
