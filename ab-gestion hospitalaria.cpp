@@ -3,6 +3,7 @@
 #include "Usuario.h"
 #include "Reportes.h"
 #include "Citas.h"
+#include "OtrosServicios.h"
 
 using namespace std;    
 
@@ -49,7 +50,8 @@ int main() {
                 cout << "3. Pacientes\n";
                 cout << "4. Citas\n";
                 cout << "5. Reportes\n";
-                cout << "6. Guardar y salir\n";
+                cout << "6. Otros servicios\n";
+                cout << "7. Guardar y salir\n";
                 cout << "Ingrese su opcion: ";
                 char opcionPrincipal;
                 cin >> opcionPrincipal;
@@ -269,6 +271,31 @@ int main() {
 
                 }
                 else if (opcionPrincipal == '6') {
+                    bool salirServicios = false;
+                    while (!salirServicios) {
+                        cout << "\n--- Menu Otros Servicios ---\n";
+                        cout << "1. Agregar servicio\n";
+                        cout << "2. Mostrar lista de servicios\n";
+                        cout << "3. Volver al menu principal\n";
+                        cout << "Ingrese su opcion: ";
+                        char opcionServicios;
+                        cin >> opcionServicios;
+
+                        if (opcionServicios == '1') {
+                            OtrosServicios::AgregarServicio();
+                        }
+                        else if (opcionServicios == '2') {
+                            OtrosServicios::MostrarServicios();
+                        }
+                        else if (opcionServicios == '3') {
+                            salirServicios = true;
+                        }
+                        else {
+                            cout << "Opcion no valida.\n";
+                        }
+                    }
+}
+                else if (opcionPrincipal == '7') {
                     Usuario::GuardarUsuarios(usuarios, archivoUsuarios);
                     cout << "Usuarios guardados con exito\n";
                     salir = true;
