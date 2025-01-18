@@ -25,7 +25,11 @@ public:
     void setPacienteID(const string& pacienteID);
     void setMedicoID(const string& medicoID);
 
-    static void CrearCita();        
+    static void CrearCita(); 
+    void MostrarCita() const;
+    static void MostrarCitas();
+    static void ModificarCita();
+    static void EliminarCita();
 };
 
 #endif

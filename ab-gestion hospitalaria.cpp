@@ -1,11 +1,4 @@
-﻿#include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <ctime>
-#include <limits>
-#include "Paciente.h"
+﻿#include "Paciente.h"
 #include "Medico.h"
 #include "Usuario.h"
 #include "Reportes.h"
@@ -187,7 +180,10 @@ int main() {
                     while (!salirCitas) {
                         cout << "\n--- Menu Citas ---\n";
                         cout << "1. Crear nueva cita\n";
-                        cout << "2. Volver al menu principal\n";
+                        cout << "2. Mostrar citas\n";
+                        cout << "3. Modificar una cita\n";
+                        cout << "4. Eliminar una cita\n";
+                        cout << "5. Volver al menu principal\n";
                         cout << "Ingrese su opcion: ";
                         char opcionCitas;
                         cin >> opcionCitas;
@@ -196,6 +192,15 @@ int main() {
                             Citas::CrearCita();
                         }
                         else if (opcionCitas == '2') {
+                            Citas::MostrarCitas();
+                        }
+                        else if (opcionCitas == '3') {
+                            Citas::ModificarCita();
+                        }
+                        else if (opcionCitas == '4') {
+                            Citas::EliminarCita();
+                        }
+                        else if (opcionCitas == '5') {
                             salirCitas = true;
                         }
                         else {

@@ -46,3 +46,145 @@ void Citas::CrearCita() {
     cout << "Cita creada exitosamente.\n";
 }
 
+void Citas::MostrarCita() const {
+    cout << "Fecha: " << fecha << endl;
+    cout << "Hora: " << hora << endl;
+    cout << "Paciente ID: " << pacienteID << endl;
+    cout << "Medico ID: " << medicoID << endl;
+    cout << "----------------------------------------------" << endl;
+}
+
+void Citas::MostrarCitas() {
+    ifstream file("citas.csv");
+    if (file.is_open()) {
+        cout << "Lista de citas:\n";
+        cout << "--------------------------------------------------\n";
+        string linea;
+        while (getline(file, linea)) {
+            if (linea.empty()) continue;
+            stringstream ss(linea);
+            string fecha, hora, pacienteID, medicoID;
+
+            getline(ss, fecha, ',');
+            getline(ss, hora, ',');
+            getline(ss, pacienteID, ',');
+            getline(ss, medicoID, ',');
+
+            Citas cita(fecha, hora, pacienteID, medicoID);
+            cita.MostrarCita();
+        }
+        file.close();
+    }
+    else {
+        cerr << "Archivo de citas no encontrado.\n";
+    }
+}
+
+void Citas::ModificarCita() {
+    cout << "Ingrese el ID del paciente: ";
+    string idPaciente;
+    cin >> idPaciente;
+
+    vector<string> lineas;
+    ifstream file("citas.csv");
+    if (!file.is_open()) {
+        cerr << "Error al abrir el archivo de citas.\n";
+        return;
+    }
+
+    string linea;
+    bool encontrado = false;
+
+    while (getline(file, linea)) {
+        stringstream ss(linea);
+        vector<string> campos;
+        string campo;
+        while (getline(ss, campo, ',')) {
+            campos.push_back(campo);
+        }
+
+        if (campos.size() > 1 && campos[1] == idPaciente) { 
+            encontrado = true;
+            cout << "Datos actuales de la cita:\n";
+            cout << "ID Cita: " << campos[0] << "\n";
+            cout << "ID Paciente: " << campos[1] << "\n";
+            cout << "ID Medico: " << campos[2] << "\n";
+            cout << "Fecha: " << campos[3] << "\n";
+
+            cout << "\nIngrese los nuevos datos de la cita:\n";
+            cout << "Nuevo ID Medico: ";
+            cin >> campos[2];
+            cout << "Nueva Fecha (YYYY-MM-DD): ";
+            cin >> campos[3];
+
+            linea = campos[0] + "," + campos[1] + "," + campos[2] + "," + campos[3] ];
+        }
+        lineas.push_back(linea);
+    }
+
+    file.close();
+
+    if (!encontrado) {
+        cout << "No se encontró una cita para el ID del paciente proporcionado.\n";
+        return;
+    }
+
+    ofstream fileOut("citas.csv", ios::trunc);
+    if (!fileOut.is_open()) {
+        cerr << "Error al abrir el archivo para guardar las citas.\n";
+        return;
+    }
+
+    for (const auto& l : lineas) {
+        fileOut << l << "\n";
+    }
+
+    fileOut.close();
+    cout << "Cita modificada exitosamente.\n";
+}
+
+void Citas::EliminarCita() {
+    cout << "Ingrese la fecha de la cita a eliminar (YYYY-MM-DD): ";
+    string fechaEliminar;
+    cin >> fechaEliminar;
+
+    ifstream file("citas.csv");
+    if (!file.is_open()) {
+        cerr << "Archivo de citas no encontrado.\n";
+        return;
+    }
+
+    vector<string> lineas;
+    string linea;
+    bool encontrado = false;
+
+    while (getline(file, linea)) {
+        stringstream ss(linea);
+        string fecha;
+        getline(ss, fecha, ',');
+        if (fecha == fechaEliminar) {
+            encontrado = true;
+            continue;
+        }
+        lineas.push_back(linea);
+    }
+    file.close();
+
+    if (!encontrado) {
+        cout << "Cita no encontrada.\n";
+        return;
+    }
+
+    ofstream outFile("citas.csv", ios::trunc);
+    if (!outFile.is_open()) {
+        cerr << "Error al abrir el archivo para guardar las citas.\n";
+        return;
+    }
+
+    for (const auto& l : lineas) {
+        outFile << l << "\n";
+    }
+    outFile.close();
+
+    cout << "Cita eliminada exitosamente.\n";
+}
