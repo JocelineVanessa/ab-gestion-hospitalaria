@@ -7,20 +7,22 @@
 
 using namespace std;
 
-Citas::Citas() : fecha(""), hora(""), pacienteID(""), medicoID(""){}
-Citas::Citas(const string& fecha, const string& hora, const string& pacienteID, const string& medicoID)
-    : fecha(fecha), hora(hora), pacienteID(pacienteID), medicoID(medicoID) {
+Citas::Citas() : fecha(""), hora(""), pacienteID(""), medicoID(""), nivelDeUrgencia(""){}
+Citas::Citas(const string& fecha, const string& hora, const string& pacienteID, const string& medicoID, const string& nivelDeUrgencia)
+    : fecha(fecha), hora(hora), pacienteID(pacienteID), medicoID(medicoID), nivelDeUrgencia(nivelDeUrgencia){
 }
 
 string Citas::getFecha() const { return fecha; }
 string Citas::getHora() const { return hora; }
 string Citas::getPacienteID() const { return pacienteID; }
 string Citas::getMedicoID() const { return medicoID; }
+string Citas::getnivelDeUrgencia() const { return nivelDeUrgencia; }
 
 void Citas::setFecha(const string& fecha) { this->fecha = fecha; }
 void Citas::setHora(const string& hora) { this->hora = hora; }
 void Citas::setPacienteID(const string& pacienteID) { this->pacienteID = pacienteID; }
 void Citas::setMedicoID(const string& medicoID) { this->medicoID = medicoID; }
+void Citas::setnivelDeUrgencia(const string& nivelDeUrgencia) { this->nivelDeUrgencia = nivelDeUrgencia; }
 
 void Citas::CrearCita() {
     ofstream file("citas.csv", ios::app);
@@ -30,7 +32,7 @@ void Citas::CrearCita() {
     }
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    string fecha, hora, pacienteID, medicoID, motivo;
+    string fecha, hora, pacienteID, medicoID, nivelDeUrgencia;
     cout << "Ingrese la fecha de la cita (YYYY-MM-DD): ";
     getline(cin, fecha);
     cout << "Ingrese la hora de la cita (HH:MM): ";
@@ -39,8 +41,10 @@ void Citas::CrearCita() {
     getline(cin, pacienteID);
     cout << "Ingrese el ID del medico: ";
     getline(cin, medicoID);
+    cout << "Ingrese el nivel de urgencia (Bajo, medio, alto): ";
+    getline(cin, nivelDeUrgencia);
 
-    file << fecha << "," << hora << "," << pacienteID << "," << medicoID << "\n";
+    file << fecha << "," << hora << "," << pacienteID << "," << medicoID << "," << nivelDeUrgencia << "\n";
     file.close();
 
     cout << "Cita creada exitosamente.\n";
@@ -63,14 +67,15 @@ void Citas::MostrarCitas() {
         while (getline(file, linea)) {
             if (linea.empty()) continue;
             stringstream ss(linea);
-            string fecha, hora, pacienteID, medicoID;
+            string fecha, hora, pacienteID, medicoID, nivelDeUrgencia;
 
             getline(ss, fecha, ',');
             getline(ss, hora, ',');
             getline(ss, pacienteID, ',');
             getline(ss, medicoID, ',');
+            getline(ss, nivelDeUrgencia, ',');
 
-            Citas cita(fecha, hora, pacienteID, medicoID);
+            Citas cita(fecha, hora, pacienteID, medicoID, nivelDeUrgencia);
             cita.MostrarCita();
         }
         file.close();
@@ -110,14 +115,17 @@ void Citas::ModificarCita() {
             cout << "ID Paciente: " << campos[1] << "\n";
             cout << "ID Medico: " << campos[2] << "\n";
             cout << "Fecha: " << campos[3] << "\n";
+            cout << "Nivel de Urgencia: " << campos[4] << "\n";
 
             cout << "\nIngrese los nuevos datos de la cita:\n";
             cout << "Nuevo ID Medico: ";
             cin >> campos[2];
             cout << "Nueva Fecha (YYYY-MM-DD): ";
             cin >> campos[3];
+            cout << "Nuevo nivel de Urgencia): ";
+            cin >> campos[4];
 
-            linea = campos[0] + "," + campos[1] + "," + campos[2] + "," + campos[3];
+            linea = campos[0] + "," + campos[1] + "," + campos[2] + "," + campos[3] + "," + campos [4];
         }
         lineas.push_back(linea);
     }
