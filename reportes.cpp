@@ -130,39 +130,37 @@ void Reportes::ReporteCitasPendientesPorDia() {
     }
 
     cout << "\nCitas programadas para la fecha " << fechaConsulta << ":\n";
-    cout << "--------------------------------------------------\n";
-    cout << "Fecha       | Hora   | ID Paciente | ID Medico\n";
+    cout << "------------------------------------------------------------\n";
+    cout << left << setw(12) << "Fecha" << setw(8) << "Hora" << setw(15) << "Paciente DNI"
+        << setw(15) << "Medico DNI" << setw(10) << "Urgencia\n";
+    cout << "------------------------------------------------------------\n";
 
     string linea;
     bool encontrado = false;
 
     while (getline(file, linea)) {
         stringstream ss(linea);
-        vector<string> campos;
-        string campo;
+        string fecha, hora, dniPaciente, dniMedico, nivelUrgencia;
 
-        while (getline(ss, campo, ',')) {
-            campo.erase(0, campo.find_first_not_of(" \t"));
-            campo.erase(campo.find_last_not_of(" \t") + 1);
-            campos.push_back(campo);
-        }
+        getline(ss, fecha, ',');
+        getline(ss, hora, ',');
+        getline(ss, dniPaciente, ',');
+        getline(ss, dniMedico, ',');
+        getline(ss, nivelUrgencia, ',');
 
-        if (campos.size() == 4) {
-            string fecha = campos[0];
-            if (fecha == fechaConsulta) {
-                encontrado = true;
-                cout << campos[0] << " | " << campos[1] << " | " << campos[2] << " | " << campos[3] << "\n";
-            }
+        if (fecha == fechaConsulta) {
+            encontrado = true;
+            cout << left << setw(12) << fecha << setw(8) << hora << setw(15) << dniPaciente
+                << setw(15) << dniMedico << setw(10) << nivelUrgencia << "\n";
         }
     }
-
-    file.close();
 
     if (!encontrado) {
         cout << "No se encontraron citas para la fecha proporcionada.\n";
     }
 
-    cout << "--------------------------------------------------\n";
+    cout << "------------------------------------------------------------\n";
+    file.close();
 }
 
 void Reportes::ReporteCitasPendientesPorMes() {
@@ -177,37 +175,35 @@ void Reportes::ReporteCitasPendientesPorMes() {
     }
 
     cout << "\nCitas programadas para el mes " << mesConsulta << ":\n";
-    cout << "--------------------------------------------------\n";
-    cout << "Fecha       | Hora   | ID Paciente | ID Medico\n";
+    cout << "------------------------------------------------------------\n";
+    cout << left << setw(12) << "Fecha" << setw(8) << "Hora" << setw(15) << "Paciente DNI"
+        << setw(15) << "Medico DNI" << setw(10) << "Urgencia\n";
+    cout << "------------------------------------------------------------\n";
 
     string linea;
     bool encontrado = false;
 
     while (getline(file, linea)) {
         stringstream ss(linea);
-        vector<string> campos;
-        string campo;
+        string fecha, hora, dniPaciente, dniMedico, nivelUrgencia;
 
-        while (getline(ss, campo, ',')) {
-            campo.erase(0, campo.find_first_not_of(" \t"));
-            campo.erase(campo.find_last_not_of(" \t") + 1);
-            campos.push_back(campo);
-        }
+        getline(ss, fecha, ',');
+        getline(ss, hora, ',');
+        getline(ss, dniPaciente, ',');
+        getline(ss, dniMedico, ',');
+        getline(ss, nivelUrgencia, ',');
 
-        if (campos.size() == 4) {
-            string fecha = campos[0];
-            if (fecha.substr(0, 7) == mesConsulta) {
-                encontrado = true;
-                cout << campos[0] << " | " << campos[1] << " | " << campos[2] << " | " << campos[3] << "\n";
-            }
+        if (fecha.substr(0, 7) == mesConsulta) {
+            encontrado = true;
+            cout << left << setw(12) << fecha << setw(8) << hora << setw(15) << dniPaciente
+                << setw(15) << dniMedico << setw(10) << nivelUrgencia << "\n";
         }
     }
-
-    file.close();
 
     if (!encontrado) {
         cout << "No se encontraron citas para el mes proporcionado.\n";
     }
 
-    cout << "--------------------------------------------------\n";
+    cout << "------------------------------------------------------------\n";
+    file.close();
 }
