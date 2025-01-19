@@ -17,7 +17,8 @@ void Reportes::ReportePacientesAtendidos(const string& fecha) {
         cerr << "Error al abrir uno de los archivos necesarios (citas.csv, pacientes.csv, medicos.csv).\n";
         return;
     }
-    map<string, vector<string>> pacientesData; 
+
+    map<string, vector<string>> pacientesData;
     string linea;
     while (getline(pacientesFile, linea)) {
         stringstream ss(linea);
@@ -96,26 +97,79 @@ void Reportes::ReportePacientesAtendidos(const string& fecha) {
 }
 
 void Reportes::ReporteMedicosDisponibles() {
-    ifstream file("medicos.csv");
-    if (!file.is_open()) {
-        cerr << "No se pudo abrir el archivo de medicos.\n";
+    cout << "Ingrese el mes de consulta (YYYY-MM): ";
+    string mesConsulta;
+    cin >> mesConsulta;
+
+    ifstream citasFile("citas.csv");
+    ifstream medicosFile("medicos.csv");
+
+    if (!citasFile.is_open() || !medicosFile.is_open()) {
+        cerr << "Error al abrir los archivos necesarios (citas.csv, medicos.csv).\n";
         return;
     }
 
-    cout << "Reporte de medicos disponibles:\n";
-    cout << "-----------------------------------------\n";
-
+    const int capacidadDiaria = 8;
+    map<string, map<string, int>> disponibilidadMedicos;
     string linea;
-    int contador = 0;
-    while (getline(file, linea)) {
-        if (!linea.empty()) {
-            ++contador;
+    vector<string> medicos;
+
+    while (getline(medicosFile, linea)) {
+        stringstream ss(linea);
+        string nombre, dni, fechaNacimiento, correo, telefono, edad, especialidad;
+        getline(ss, nombre, ',');
+        getline(ss, dni, ',');
+        getline(ss, fechaNacimiento, ',');
+        getline(ss, correo, ',');
+        getline(ss, telefono, ',');
+        getline(ss, edad, ',');
+        getline(ss, especialidad, ',');
+
+        medicos.push_back(dni);
+        disponibilidadMedicos[dni] = {};
+    }
+    medicosFile.close();
+
+    while (getline(citasFile, linea)) {
+        stringstream ss(linea);
+        string fecha, hora, dniPaciente, dniMedico, nivelUrgencia;
+        getline(ss, fecha, ',');
+        getline(ss, hora, ',');
+        getline(ss, dniPaciente, ',');
+        getline(ss, dniMedico, ',');
+        getline(ss, nivelUrgencia, ',');
+
+        if (fecha.substr(0, 7) == mesConsulta) {
+            disponibilidadMedicos[dniMedico][fecha]++;
         }
     }
-    file.close();
+    citasFile.close();
 
-    cout << "Medicos disponibles: " << contador << "\n";
-    cout << "-----------------------------------------\n";
+    cout << "\nReporte de Disponibilidad de Medicos para el mes: " << mesConsulta << "\n";
+    cout << "---------------------------------------------------------\n";
+
+    for (const auto& medico : medicos) {
+        cout << "Medico (DNI): " << medico << "\n";
+        cout << "Dias disponibles para agendar nuevas citas:\n";
+
+        bool tieneDisponibilidad = false;
+        for (int dia = 1; dia <= 31; ++dia) {
+            stringstream fechaStream;
+            fechaStream << mesConsulta << "-" << setw(2) << setfill('0') << dia;
+            string fechaDia = fechaStream.str();
+
+            if (disponibilidadMedicos[medico][fechaDia] < capacidadDiaria) {
+                tieneDisponibilidad = true;
+                cout << "  - " << fechaDia << " (Citas actuales: "
+                    << disponibilidadMedicos[medico][fechaDia] << ")\n";
+            }
+        }
+
+        if (!tieneDisponibilidad) {
+            cout << "  Nigun dia disponible.\n";
+        }
+        cout << "---------------------------------------------------------\n";
+    }
 }
 
 void Reportes::ReporteCitasPendientesPorDia() {
