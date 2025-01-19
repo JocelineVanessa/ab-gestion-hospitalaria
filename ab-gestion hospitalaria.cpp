@@ -319,6 +319,107 @@ int main() {
                 }
             }
         }
+        else if (usuarioAutenticado.getRol() == "MEDICO") {
+            bool salir = false;
+            while (!salir) {
+                cout << "\n--- Menu Principal (Medico) ---\n";
+                cout << "1. Mostrar citas\n";
+                cout << "2. Modificar citas\n";
+                cout << "3. Mostrar pacientes\n";
+                cout << "4. Salir\n";
+                cout << "Ingrese su opcion: ";
+                char opcionMedico;
+                cin >> opcionMedico;
+
+                if (opcionMedico == '1') {
+                    Citas::MostrarCitas();
+                }
+                else if (opcionMedico == '2') {
+                    Citas::ModificarCita();
+                }
+                else if (opcionMedico == '3') {
+                    Paciente::MostrarPacientes();
+                }
+                else if (opcionMedico == '4') {
+                    salir = true;
+                }
+                else {
+                    cout << "Opcion no valida.\n";
+                }
+            }
+        }
+        else if (usuarioAutenticado.getRol() == "RECEPCIONISTA") {
+            bool salir = false;
+            while (!salir) {
+                cout << "\n--- Menu Principal (Recepcionista) ---\n";
+                cout << "1. Crear cita\n";
+                cout << "2. Mostrar citas\n";
+                cout << "3. Modificar citas\n";
+                cout << "4. Eliminar citas\n";
+                cout << "5. Crear paciente\n";
+                cout << "6. Modificar pacientes\n";
+                cout << "7. Mostrar pacientes\n";
+                cout << "8. Buscar pacientes por DNI\n";
+                cout << "9. Buscar pacientes por nombre\n";
+                cout << "10. Eliminar pacientes\n";
+                cout << "11. Salir\n";
+                cout << "Ingrese su opcion: ";
+                char opcionRecepcionista;
+                cin >> opcionRecepcionista;
+
+                if (opcionRecepcionista == '1') {
+                    Citas::CrearCita();
+                }
+                else if (opcionRecepcionista == '2') {
+                    Citas::MostrarCitas();
+                }
+                else if (opcionRecepcionista == '3') {
+                    Citas::ModificarCita();
+                }
+                else if (opcionRecepcionista == '4') {
+                    Citas::EliminarCita();
+                }
+                else if (opcionRecepcionista == '5') {
+                    if (usuarioAutenticado.VerificarPermiso(CREAR_PACIENTE)) {
+                        Paciente::CrearPaciente();
+                    }
+                    else {
+                        cout << "No tiene permiso para crear pacientes.\n";
+                    }
+                }
+                else if (opcionRecepcionista == '6') {
+                    if (usuarioAutenticado.VerificarPermiso(MODIFICAR_PACIENTE)) {
+                        Paciente::ModificarPaciente();
+                    }
+                    else {
+                        cout << "No tiene permiso para modificar pacientes.\n";
+                    }
+                }
+                else if (opcionRecepcionista == '7') {
+                    Paciente::MostrarPacientes();
+                }
+                else if (opcionRecepcionista == '8') {
+                    Paciente::BuscarPacientePorDNI();
+                }
+                else if (opcionRecepcionista == '9') {
+                    Paciente::BuscarPacientePorNombre();
+                }
+                else if (opcionRecepcionista == '10') {
+                    if (usuarioAutenticado.VerificarPermiso(ELIMINAR_PACIENTE)) {
+                        Paciente::EliminarPaciente();
+                    }
+                    else {
+                        cout << "No tiene permiso para eliminar pacientes.\n";
+                    }
+                }
+                else if (opcionRecepcionista == '11') {
+                    salir = true;
+                }
+                else {
+                    cout << "Opcion no valida.\n";
+                }
+            }
+        }
         else {
             cout << "No tiene permisos para realizar esta accion.\n";
         }
